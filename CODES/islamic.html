@@ -1,1 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Islamic Games</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#064e3b,#0f766e,#22c55e);
+  color:#111827;
+  overflow-x:hidden;
+}
+
+button{
+  font-family:inherit;
+}
+
+.app{
+  width:100%;
+  min-height:100vh;
+  padding:18px 5% 28px;
+}
+
+.topbar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.backBtn,
+.homeBtn{
+  border:0;
+  background:rgba(255,255,255,0.22);
+  color:white;
+  border-radius:18px;
+  padding:12px 14px;
+  font-size:15px;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(0,0,0,0.18);
+}
+
+.titleBox{
+  flex:1;
+  text-align:center;
+  color:white;
+}
+
+.titleBox h1{
+  margin:0;
+  font-size:27px;
+}
+
+.titleBox p{
+  margin:4px 0 0;
+  font-size:12px;
+  opacity:0.9;
+}
+
+.menuGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.gameCard{
+  border:0;
+  background:white;
+  border-radius:25px;
+  padding:18px 10px;
+  min-height:132px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.18);
+  text-align:center;
+  cursor:pointer;
+}
+
+.gameCard:active,
+.backBtn:active,
+.homeBtn:active,
+.actionBtn:active,
+.choiceBtn:active,
+.tile:active{
+  transform:scale(0.96);
+}
+
+.gameIcon{
+  font-size:38px;
+  margin-bottom:8px;
+}
+
+.gameCard h2{
+  margin:0;
+  font-size:17px;
+}
+
+.gameCard p{
+  margin:7px 0 0;
+  font-size:12px;
+  color:#6b7280;
+  line-height:1.35;
+}
+
+.gameScreen{
+  display:none;
+  width:100%;
+  min-height:100vh;
+  padding:16px 5% 24px;
+}
+
+.gamePanel{
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  background:white;
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.22);
+}
+
+.gameHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.gameHeader h2{
+  margin:0;
+  font-size:21px;
+  text-align:center;
+}
+
+.scoreBox{
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:9px 12px;
+  font-weight:800;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.bigQuestion{
+  width:100%;
+  min-height:120px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#047857,#22c55e);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px;
+  font-size:28px;
+  font-weight:900;
+  line-height:1.35;
+}
+
+.arabicBox{
+  font-size:42px;
+  direction:rtl;
+  font-family:Georgia, "Times New Roman", serif;
+}
+
+.choiceGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.choiceBtn{
+  border:0;
+  border-radius:18px;
+  padding:18px 10px;
+  background:#f3f4f6;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  line-height:1.3;
+}
+
+.actionBtn{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  background:#16a34a;
+  color:white;
+  padding:14px 10px;
+  margin-top:12px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.redBtn{
+  background:#ef4444;
+}
+
+.blueBtn{
+  background:#2563eb;
+}
+
+.grayBtn{
+  background:#6b7280;
+}
+
+.message{
+  margin-top:10px;
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  color:#374151;
+  line-height:1.4;
+}
+
+.board3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.board4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.tile{
+  border:0;
+  border-radius:18px;
+  min-height:74px;
+  background:#f3f4f6;
+  font-size:23px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.tile.good{
+  background:#22c55e;
+  color:white;
+}
+
+.tile.bad{
+  background:#ef4444;
+  color:white;
+}
+
+.tile.dark{
+  background:#111827;
+  color:white;
+}
+
+.inputBox{
+  width:100%;
+  border:2px solid #e5e7eb;
+  border-radius:18px;
+  padding:15px;
+  font-size:22px;
+  font-weight:800;
+  text-align:center;
+  outline:none;
+  margin-top:12px;
+  user-select:text;
+}
+
+.counterCircle{
+  width:230px;
+  height:230px;
+  border-radius:50%;
+  margin:16px auto;
+  background:linear-gradient(135deg,#064e3b,#22c55e);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  font-weight:900;
+  box-shadow:0 15px 30px rgba(0,0,0,0.18);
+  cursor:pointer;
+}
+
+.counterCircle .num{
+  font-size:56px;
+}
+
+.counterCircle .label{
+  font-size:15px;
+  opacity:0.9;
+}
+
+@media(max-width:430px){
+  .app{
+    padding:16px 4% 24px;
+  }
+
+  .titleBox h1{
+    font-size:24px;
+  }
+
+  .menuGrid{
+    gap:12px;
+  }
+
+  .gameCard{
+    min-height:125px;
+    border-radius:23px;
+  }
+
+  .gameIcon{
+    font-size:34px;
+  }
+
+  .gameCard h2{
+    font-size:15px;
+  }
+
+  .gamePanel{
+    padding:13px;
+    border-radius:25px;
+  }
+
+  .gameHeader h2{
+    font-size:18px;
+  }
+
+  .bigQuestion{
+    font-size:24px;
+  }
+
+  .arabicBox{
+    font-size:38px;
+  }
+
+  .tile{
+    min-height:66px;
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     ISLAMIC GAMES MAIN MENU
+========================= -->
+<div id="mainMenu" class="app">
+
+  <div class="topbar">
+    <button class="backBtn" onclick="goMainWebsite()">← Main</button>
+    <div class="titleBox">
+      <h1>🕌 Islamic Games</h1>
+      <p>10 simple Islamic learning games</p>
+    </div>
+    <button class="homeBtn" onclick="showMenu()">Home</button>
+  </div>
+
+  <div class="menuGrid">
+
+    <button class="gameCard" onclick="openGame('quizGame'); startIslamicQuiz();">
+      <div class="gameIcon">❓</div>
+      <h2>Islamic Quiz</h2>
+      <p>Answer basic Islamic questions.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('salahQuizGame'); startSalahQuiz();">
+      <div class="gameIcon">🕋</div>
+      <h2>Salah Quiz</h2>
+      <p>Learn prayer names and order.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('arabicLetterGame'); startArabicLetterGame();">
+      <div class="gameIcon">🔤</div>
+      <h2>Arabic Letters</h2>
+      <p>Match Arabic letters with names.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('prophetGame'); startProphetGame();">
+      <div class="gameIcon">📜</div>
+      <h2>Prophets Match</h2>
+      <p>Choose the correct Prophet name.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('duaGame'); startDuaGame();">
+      <div class="gameIcon">🤲</div>
+      <h2>Dua Match</h2>
+      <p>Match daily duas with meaning.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('surahGame'); startSurahGame();">
+      <div class="gameIcon">📖</div>
+      <h2>Surah Quiz</h2>
+      <p>Guess short surah facts.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('dhikrCounterGame'); startDhikrCounter();">
+      <div class="gameIcon">📿</div>
+      <h2>Dhikr Tap</h2>
+      <p>Tap to complete 33 dhikr.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('wuduGame'); startWuduGame();">
+      <div class="gameIcon">💧</div>
+      <h2>Wudu Steps</h2>
+      <p>Put wudu steps in order.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('ramadanGame'); startRamadanGame();">
+      <div class="gameIcon">🌙</div>
+      <h2>Ramadan Quiz</h2>
+      <p>Learn Ramadan basics.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('qiblaGame'); startQiblaGame();">
+      <div class="gameIcon">🧭</div>
+      <h2>Qibla Direction</h2>
+      <p>Pick the direction Muslims face.</p>
+    </button>
+
+  </div>
+</div>
+
+<!-- =========================
+     GAME 1: ISLAMIC QUIZ
+========================= -->
+<div id="quizGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>❓ Islamic Quiz</h2>
+      <div class="scoreBox">Score: <span id="quizScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="quizQuestion">Question</div>
+    <div id="quizChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startIslamicQuiz()">Restart</button>
+    <div class="message" id="quizMsg">Choose the correct answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 2: SALAH QUIZ
+========================= -->
+<div id="salahQuizGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🕋 Salah Quiz</h2>
+      <div class="scoreBox">Score: <span id="salahScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="salahQuestion">Question</div>
+    <div id="salahChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startSalahQuiz()">Restart</button>
+    <div class="message" id="salahMsg">Choose the correct answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 3: ARABIC LETTER GAME
+========================= -->
+<div id="arabicLetterGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔤 Arabic Letters</h2>
+      <div class="scoreBox">Score: <span id="letterScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion arabicBox" id="letterQuestion">ا</div>
+    <div id="letterChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startArabicLetterGame()">Restart</button>
+    <div class="message" id="letterMsg">Pick the correct letter name.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 4: PROPHETS MATCH
+========================= -->
+<div id="prophetGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>📜 Prophets Match</h2>
+      <div class="scoreBox">Score: <span id="prophetScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="prophetQuestion">Question</div>
+    <div id="prophetChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startProphetGame()">Restart</button>
+    <div class="message" id="prophetMsg">Choose the correct Prophet.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 5: DUA MATCH
+========================= -->
+<div id="duaGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🤲 Dua Match</h2>
+      <div class="scoreBox">Score: <span id="duaScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="duaQuestion">Question</div>
+    <div id="duaChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startDuaGame()">Restart</button>
+    <div class="message" id="duaMsg">Choose when this dua is said.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 6: SURAH QUIZ
+========================= -->
+<div id="surahGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>📖 Surah Quiz</h2>
+      <div class="scoreBox">Score: <span id="surahScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="surahQuestion">Question</div>
+    <div id="surahChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startSurahGame()">Restart</button>
+    <div class="message" id="surahMsg">Choose the correct answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 7: DHIKR COUNTER GAME
+========================= -->
+<div id="dhikrCounterGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>📿 Dhikr Tap</h2>
+      <div class="scoreBox"><span id="dhikrTargetText">0/33</span></div>
+    </div>
+
+    <div class="bigQuestion arabicBox" id="dhikrText">سُبْحَانَ الله</div>
+
+    <div class="counterCircle" onclick="tapDhikr()">
+      <div class="num" id="dhikrCount">0</div>
+      <div class="label">Tap here</div>
+    </div>
+
+    <button class="actionBtn blueBtn" onclick="changeDhikr()">Change Dhikr</button>
+    <button class="actionBtn redBtn" onclick="startDhikrCounter()">Restart</button>
+    <div class="message" id="dhikrMsg">Tap 33 times to complete.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 8: WUDU STEPS
+========================= -->
+<div id="wuduGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>💧 Wudu Steps</h2>
+      <div class="scoreBox">Step: <span id="wuduStepText">1</span></div>
+    </div>
+
+    <div class="bigQuestion" id="wuduQuestion">What comes first?</div>
+    <div id="wuduChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startWuduGame()">Restart</button>
+    <div class="message" id="wuduMsg">Choose the next wudu step in order.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 9: RAMADAN QUIZ
+========================= -->
+<div id="ramadanGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🌙 Ramadan Quiz</h2>
+      <div class="scoreBox">Score: <span id="ramadanScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="ramadanQuestion">Question</div>
+    <div id="ramadanChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startRamadanGame()">Restart</button>
+    <div class="message" id="ramadanMsg">Choose the correct answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 10: QIBLA DIRECTION GAME
+========================= -->
+<div id="qiblaGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🧭 Qibla Direction</h2>
+      <div class="scoreBox">Score: <span id="qiblaScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="qiblaQuestion">Muslims face which direction for Salah?</div>
+    <div id="qiblaChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startQiblaGame()">Restart</button>
+    <div class="message" id="qiblaMsg">Choose the best answer.</div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   GLOBAL PAGE LOGIC
+========================= */
+let activeTimers = [];
+
+function saveTimer(id){
+  activeTimers.push(id);
+}
+
+function stopAllGames(){
+  activeTimers.forEach(id => clearTimeout(id));
+  activeTimers.forEach(id => clearInterval(id));
+  activeTimers = [];
+}
+
+function openGame(id){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "none";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function showMenu(){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "block";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  window.scrollTo(0,0);
+}
+
+function goMainWebsite(){
+  window.location.href = "../";
+}
+
+function rand(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function makeChoices(containerId, choices, correctAnswer, callback){
+  const box = document.getElementById(containerId);
+  box.innerHTML = "";
+
+  shuffleArray(choices);
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "choiceBtn";
+    btn.innerText = choice;
+    btn.onclick = function(){
+      callback(choice === correctAnswer, choice);
+    };
+    box.appendChild(btn);
+  });
+}
+
+/* =========================
+   GAME 1: ISLAMIC QUIZ
+========================= */
+let islamicQuizScore = 0;
+let islamicQuizQuestions = [
+  {
+    q:"How many pillars of Islam are there?",
+    a:"5",
+    c:["5","4","6","7"]
+  },
+  {
+    q:"What is the holy book of Islam?",
+    a:"Quran",
+    c:["Quran","Bible","Torah","Zabur"]
+  },
+  {
+    q:"Who is the final Prophet in Islam?",
+    a:"Prophet Muhammad ﷺ",
+    c:["Prophet Muhammad ﷺ","Prophet Musa AS","Prophet Isa AS","Prophet Ibrahim AS"]
+  },
+  {
+    q:"What is the first pillar of Islam?",
+    a:"Shahadah",
+    c:["Shahadah","Salah","Zakah","Hajj"]
+  },
+  {
+    q:"How many daily prayers are there?",
+    a:"5",
+    c:["5","3","4","6"]
+  },
+  {
+    q:"Which city has the Kaaba?",
+    a:"Makkah",
+    c:["Makkah","Madinah","Jerusalem","Cairo"]
+  }
+];
+let currentIslamicQuiz = null;
+
+function startIslamicQuiz(){
+  stopAllGames();
+  islamicQuizScore = 0;
+  document.getElementById("quizScore").innerText = islamicQuizScore;
+  document.getElementById("quizMsg").innerText = "Choose the correct answer.";
+  newIslamicQuizQuestion();
+}
+
+function newIslamicQuizQuestion(){
+  currentIslamicQuiz = islamicQuizQuestions[rand(0,islamicQuizQuestions.length - 1)];
+  document.getElementById("quizQuestion").innerText = currentIslamicQuiz.q;
+
+  makeChoices("quizChoices", [...currentIslamicQuiz.c], currentIslamicQuiz.a, function(correct){
+    if(correct){
+      islamicQuizScore++;
+      document.getElementById("quizScore").innerText = islamicQuizScore;
+      document.getElementById("quizMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("quizMsg").innerText = "Wrong. Try next one.";
+    }
+    setTimeout(newIslamicQuizQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 2: SALAH QUIZ
+========================= */
+let salahScore = 0;
+let salahQuestions = [
+  {
+    q:"Which prayer is before sunrise?",
+    a:"Fajr",
+    c:["Fajr","Dhuhr","Asr","Isha"]
+  },
+  {
+    q:"Which prayer is after sunset?",
+    a:"Maghrib",
+    c:["Maghrib","Fajr","Dhuhr","Asr"]
+  },
+  {
+    q:"Which prayer is at night?",
+    a:"Isha",
+    c:["Isha","Dhuhr","Fajr","Maghrib"]
+  },
+  {
+    q:"What is the second daily prayer?",
+    a:"Dhuhr",
+    c:["Dhuhr","Fajr","Asr","Isha"]
+  },
+  {
+    q:"What comes after Dhuhr?",
+    a:"Asr",
+    c:["Asr","Maghrib","Isha","Fajr"]
+  }
+];
+let currentSalahQuestion = null;
+
+function startSalahQuiz(){
+  stopAllGames();
+  salahScore = 0;
+  document.getElementById("salahScore").innerText = salahScore;
+  document.getElementById("salahMsg").innerText = "Choose the correct answer.";
+  newSalahQuestion();
+}
+
+function newSalahQuestion(){
+  currentSalahQuestion = salahQuestions[rand(0,salahQuestions.length - 1)];
+  document.getElementById("salahQuestion").innerText = currentSalahQuestion.q;
+
+  makeChoices("salahChoices", [...currentSalahQuestion.c], currentSalahQuestion.a, function(correct){
+    if(correct){
+      salahScore++;
+      document.getElementById("salahScore").innerText = salahScore;
+      document.getElementById("salahMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("salahMsg").innerText = "Wrong. New question.";
+    }
+    setTimeout(newSalahQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 3: ARABIC LETTER GAME
+========================= */
+let letterScore = 0;
+let arabicLetters = [
+  {l:"ا",n:"Alif"},
+  {l:"ب",n:"Ba"},
+  {l:"ت",n:"Ta"},
+  {l:"ث",n:"Tha"},
+  {l:"ج",n:"Jeem"},
+  {l:"ح",n:"Ha"},
+  {l:"خ",n:"Kha"},
+  {l:"د",n:"Dal"},
+  {l:"ر",n:"Ra"},
+  {l:"س",n:"Seen"},
+  {l:"ص",n:"Saad"},
+  {l:"ع",n:"Ayn"},
+  {l:"ف",n:"Fa"},
+  {l:"ق",n:"Qaf"},
+  {l:"ك",n:"Kaf"},
+  {l:"ل",n:"Lam"},
+  {l:"م",n:"Meem"},
+  {l:"ن",n:"Noon"},
+  {l:"و",n:"Waw"},
+  {l:"ي",n:"Ya"}
+];
+let currentLetter = null;
+
+function startArabicLetterGame(){
+  stopAllGames();
+  letterScore = 0;
+  document.getElementById("letterScore").innerText = letterScore;
+  document.getElementById("letterMsg").innerText = "Pick the correct letter name.";
+  newLetterQuestion();
+}
+
+function newLetterQuestion(){
+  currentLetter = arabicLetters[rand(0,arabicLetters.length - 1)];
+  document.getElementById("letterQuestion").innerText = currentLetter.l;
+
+  let choices = [currentLetter.n];
+  while(choices.length < 4){
+    let name = arabicLetters[rand(0,arabicLetters.length - 1)].n;
+    if(!choices.includes(name)) choices.push(name);
+  }
+
+  makeChoices("letterChoices", choices, currentLetter.n, function(correct){
+    if(correct){
+      letterScore++;
+      document.getElementById("letterScore").innerText = letterScore;
+      document.getElementById("letterMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("letterMsg").innerText = "Wrong. Try next letter.";
+    }
+    setTimeout(newLetterQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 4: PROPHETS MATCH
+========================= */
+let prophetScore = 0;
+let prophetQuestions = [
+  {
+    q:"Which Prophet built the Ark?",
+    a:"Nuh AS",
+    c:["Nuh AS","Musa AS","Yusuf AS","Isa AS"]
+  },
+  {
+    q:"Which Prophet was swallowed by a big fish?",
+    a:"Yunus AS",
+    c:["Yunus AS","Ibrahim AS","Adam AS","Dawud AS"]
+  },
+  {
+    q:"Which Prophet received the Torah?",
+    a:"Musa AS",
+    c:["Musa AS","Isa AS","Nuh AS","Yusuf AS"]
+  },
+  {
+    q:"Which Prophet was known for great patience?",
+    a:"Ayyub AS",
+    c:["Ayyub AS","Sulaiman AS","Harun AS","Idris AS"]
+  },
+  {
+    q:"Which Prophet was the first human?",
+    a:"Adam AS",
+    c:["Adam AS","Nuh AS","Ibrahim AS","Musa AS"]
+  }
+];
+let currentProphetQuestion = null;
+
+function startProphetGame(){
+  stopAllGames();
+  prophetScore = 0;
+  document.getElementById("prophetScore").innerText = prophetScore;
+  document.getElementById("prophetMsg").innerText = "Choose the correct Prophet.";
+  newProphetQuestion();
+}
+
+function newProphetQuestion(){
+  currentProphetQuestion = prophetQuestions[rand(0,prophetQuestions.length - 1)];
+  document.getElementById("prophetQuestion").innerText = currentProphetQuestion.q;
+
+  makeChoices("prophetChoices", [...currentProphetQuestion.c], currentProphetQuestion.a, function(correct){
+    if(correct){
+      prophetScore++;
+      document.getElementById("prophetScore").innerText = prophetScore;
+      document.getElementById("prophetMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("prophetMsg").innerText = "Wrong. New question.";
+    }
+    setTimeout(newProphetQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 5: DUA MATCH
+========================= */
+let duaScore = 0;
+let duaQuestions = [
+  {
+    q:"Bismillah",
+    a:"Before starting",
+    c:["Before starting","Before sleeping","After sneezing","Entering bathroom"]
+  },
+  {
+    q:"Alhamdulillah",
+    a:"Thanking Allah",
+    c:["Thanking Allah","Before eating","When angry","Before travel"]
+  },
+  {
+    q:"SubhanAllah",
+    a:"Glory be to Allah",
+    c:["Glory be to Allah","Goodbye","Before sleep","After wudu"]
+  },
+  {
+    q:"Assalamu Alaikum",
+    a:"Islamic greeting",
+    c:["Islamic greeting","Before eating","After prayer","Before wudu"]
+  },
+  {
+    q:"Astaghfirullah",
+    a:"Seeking forgiveness",
+    c:["Seeking forgiveness","Before eating","After waking","Greeting someone"]
+  }
+];
+let currentDuaQuestion = null;
+
+function startDuaGame(){
+  stopAllGames();
+  duaScore = 0;
+  document.getElementById("duaScore").innerText = duaScore;
+  document.getElementById("duaMsg").innerText = "Choose when this dua is said.";
+  newDuaQuestion();
+}
+
+function newDuaQuestion(){
+  currentDuaQuestion = duaQuestions[rand(0,duaQuestions.length - 1)];
+  document.getElementById("duaQuestion").innerText = currentDuaQuestion.q;
+
+  makeChoices("duaChoices", [...currentDuaQuestion.c], currentDuaQuestion.a, function(correct){
+    if(correct){
+      duaScore++;
+      document.getElementById("duaScore").innerText = duaScore;
+      document.getElementById("duaMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("duaMsg").innerText = "Wrong. New dua.";
+    }
+    setTimeout(newDuaQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 6: SURAH QUIZ
+========================= */
+let surahScore = 0;
+let surahQuestions = [
+  {
+    q:"Which is the first Surah of the Quran?",
+    a:"Al-Fatihah",
+    c:["Al-Fatihah","Al-Baqarah","Al-Ikhlas","An-Nas"]
+  },
+  {
+    q:"Which Surah is called the heart of the Quran by many people?",
+    a:"Ya-Sin",
+    c:["Ya-Sin","Al-Mulk","Al-Kahf","Al-Falaq"]
+  },
+  {
+    q:"Which is the last Surah of the Quran?",
+    a:"An-Nas",
+    c:["An-Nas","Al-Falaq","Al-Ikhlas","Al-Kawthar"]
+  },
+  {
+    q:"Which Surah begins with Qul Huwa Allahu Ahad?",
+    a:"Al-Ikhlas",
+    c:["Al-Ikhlas","Al-Fatihah","Al-Asr","Al-Nasr"]
+  },
+  {
+    q:"Which Surah is often read on Friday?",
+    a:"Al-Kahf",
+    c:["Al-Kahf","Al-Fil","Quraysh","Al-Masad"]
+  }
+];
+let currentSurahQuestion = null;
+
+function startSurahGame(){
+  stopAllGames();
+  surahScore = 0;
+  document.getElementById("surahScore").innerText = surahScore;
+  document.getElementById("surahMsg").innerText = "Choose the correct answer.";
+  newSurahQuestion();
+}
+
+function newSurahQuestion(){
+  currentSurahQuestion = surahQuestions[rand(0,surahQuestions.length - 1)];
+  document.getElementById("surahQuestion").innerText = currentSurahQuestion.q;
+
+  makeChoices("surahChoices", [...currentSurahQuestion.c], currentSurahQuestion.a, function(correct){
+    if(correct){
+      surahScore++;
+      document.getElementById("surahScore").innerText = surahScore;
+      document.getElementById("surahMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("surahMsg").innerText = "Wrong. New question.";
+    }
+    setTimeout(newSurahQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 7: DHIKR COUNTER
+========================= */
+let dhikrCount = 0;
+let dhikrIndex = 0;
+let dhikrList = [
+  "سُبْحَانَ الله",
+  "الْحَمْدُ لله",
+  "اللهُ أَكْبَر",
+  "أَسْتَغْفِرُ الله"
+];
+
+function startDhikrCounter(){
+  stopAllGames();
+  dhikrCount = 0;
+  document.getElementById("dhikrCount").innerText = dhikrCount;
+  document.getElementById("dhikrTargetText").innerText = "0/33";
+  document.getElementById("dhikrText").innerText = dhikrList[dhikrIndex];
+  document.getElementById("dhikrMsg").innerText = "Tap 33 times to complete.";
+}
+
+function tapDhikr(){
+  if(dhikrCount >= 33) return;
+  dhikrCount++;
+  document.getElementById("dhikrCount").innerText = dhikrCount;
+  document.getElementById("dhikrTargetText").innerText = dhikrCount + "/33";
+
+  if(dhikrCount === 33){
+    document.getElementById("dhikrMsg").innerText = "Mashallah! You completed 33.";
+  }
+}
+
+function changeDhikr(){
+  dhikrIndex++;
+  if(dhikrIndex >= dhikrList.length) dhikrIndex = 0;
+  startDhikrCounter();
+}
+
+/* =========================
+   GAME 8: WUDU STEPS
+========================= */
+let wuduSteps = [
+  "Make intention",
+  "Say Bismillah",
+  "Wash hands",
+  "Rinse mouth",
+  "Rinse nose",
+  "Wash face",
+  "Wash arms",
+  "Wipe head",
+  "Wash feet"
+];
+let wuduCurrentStep = 0;
+
+function startWuduGame(){
+  stopAllGames();
+  wuduCurrentStep = 0;
+  document.getElementById("wuduMsg").innerText = "Choose the next wudu step in order.";
+  newWuduStep();
+}
+
+function newWuduStep(){
+  document.getElementById("wuduStepText").innerText = wuduCurrentStep + 1;
+  document.getElementById("wuduQuestion").innerText = "What comes next in wudu?";
+
+  let correct = wuduSteps[wuduCurrentStep];
+  let choices = [correct];
+
+  while(choices.length < 4){
+    let step = wuduSteps[rand(0,wuduSteps.length - 1)];
+    if(!choices.includes(step)) choices.push(step);
+  }
+
+  makeChoices("wuduChoices", choices, correct, function(correctAnswer){
+    if(correctAnswer){
+      wuduCurrentStep++;
+      document.getElementById("wuduMsg").innerText = "Correct!";
+
+      if(wuduCurrentStep >= wuduSteps.length){
+        document.getElementById("wuduQuestion").innerText = "Wudu steps completed!";
+        document.getElementById("wuduChoices").innerHTML = "";
+        document.getElementById("wuduMsg").innerText = "Mashallah!";
+        return;
+      }
+
+      setTimeout(newWuduStep,500);
+    }else{
+      document.getElementById("wuduMsg").innerText = "Wrong. Try again.";
+    }
+  });
+}
+
+/* =========================
+   GAME 9: RAMADAN QUIZ
+========================= */
+let ramadanScore = 0;
+let ramadanQuestions = [
+  {
+    q:"What do Muslims do in Ramadan from Fajr to Maghrib?",
+    a:"Fast",
+    c:["Fast","Sleep all day","Travel only","Do not pray"]
+  },
+  {
+    q:"What meal is eaten before Fajr?",
+    a:"Suhoor",
+    c:["Suhoor","Iftar","Dinner","Lunch"]
+  },
+  {
+    q:"What meal opens the fast at Maghrib?",
+    a:"Iftar",
+    c:["Iftar","Suhoor","Breakfast","Snack"]
+  },
+  {
+    q:"Which book was revealed in Ramadan?",
+    a:"Quran",
+    c:["Quran","Hadith book","Dictionary","Calendar"]
+  },
+  {
+    q:"What comes after Ramadan?",
+    a:"Eid al-Fitr",
+    c:["Eid al-Fitr","Eid al-Adha","Hajj","Ashura"]
+  }
+];
+let currentRamadanQuestion = null;
+
+function startRamadanGame(){
+  stopAllGames();
+  ramadanScore = 0;
+  document.getElementById("ramadanScore").innerText = ramadanScore;
+  document.getElementById("ramadanMsg").innerText = "Choose the correct answer.";
+  newRamadanQuestion();
+}
+
+function newRamadanQuestion(){
+  currentRamadanQuestion = ramadanQuestions[rand(0,ramadanQuestions.length - 1)];
+  document.getElementById("ramadanQuestion").innerText = currentRamadanQuestion.q;
+
+  makeChoices("ramadanChoices", [...currentRamadanQuestion.c], currentRamadanQuestion.a, function(correct){
+    if(correct){
+      ramadanScore++;
+      document.getElementById("ramadanScore").innerText = ramadanScore;
+      document.getElementById("ramadanMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("ramadanMsg").innerText = "Wrong. New question.";
+    }
+    setTimeout(newRamadanQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 10: QIBLA DIRECTION
+========================= */
+let qiblaScore = 0;
+let qiblaQuestions = [
+  {
+    q:"Muslims face which place during Salah?",
+    a:"Kaaba in Makkah",
+    c:["Kaaba in Makkah","Madinah only","Any mountain","The nearest masjid"]
+  },
+  {
+    q:"What is the direction of prayer called?",
+    a:"Qibla",
+    c:["Qibla","Mihrab","Minbar","Adhan"]
+  },
+  {
+    q:"The Kaaba is located in which city?",
+    a:"Makkah",
+    c:["Makkah","Madinah","Jeddah","Taif"]
+  },
+  {
+    q:"What tool can help find Qibla?",
+    a:"Compass",
+    c:["Compass","Calendar","Calculator","Flashlight"]
+  }
+];
+let currentQiblaQuestion = null;
+
+function startQiblaGame(){
+  stopAllGames();
+  qiblaScore = 0;
+  document.getElementById("qiblaScore").innerText = qiblaScore;
+  document.getElementById("qiblaMsg").innerText = "Choose the best answer.";
+  newQiblaQuestion();
+}
+
+function newQiblaQuestion(){
+  currentQiblaQuestion = qiblaQuestions[rand(0,qiblaQuestions.length - 1)];
+  document.getElementById("qiblaQuestion").innerText = currentQiblaQuestion.q;
+
+  makeChoices("qiblaChoices", [...currentQiblaQuestion.c], currentQiblaQuestion.a, function(correct){
+    if(correct){
+      qiblaScore++;
+      document.getElementById("qiblaScore").innerText = qiblaScore;
+      document.getElementById("qiblaMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("qiblaMsg").innerText = "Wrong. New question.";
+    }
+    setTimeout(newQiblaQuestion,500);
+  });
+}
+</script>
+
+</body>
+</html>
