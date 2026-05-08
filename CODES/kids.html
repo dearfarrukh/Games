@@ -400,7 +400,7 @@ button{
     <button class="backBtn" onclick="goMainWebsite()">← Main</button>
     <div class="titleBox">
       <h1>🌈 Kids Games</h1>
-      <p>10 simple colorful learning games</p>
+      <p>11 simple colorful learning games</p>
     </div>
     <button class="homeBtn" onclick="showMenu()">Home</button>
   </div>
@@ -441,6 +441,12 @@ button{
       <div class="gameIcon">➕</div>
       <h2>Easy Math</h2>
       <p>Simple addition for kids.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('mathPracticeGame'); startMathPracticeGame();">
+      <div class="gameIcon">🧮</div>
+      <h2>Math Practice</h2>
+      <p>Add, subtract, multiply and divide.</p>
     </button>
 
     <button class="gameCard" onclick="openGame('balloonGame'); startBalloonGame();">
@@ -585,7 +591,35 @@ button{
 </div>
 
 <!-- =========================
-     GAME 7: POP BALLOONS
+     GAME 7: MATH PRACTICE
+========================= -->
+<div id="mathPracticeGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🧮 Math Practice</h2>
+      <div class="scoreBox">Score: <span id="mathPracticeScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="mathPracticeQuestion">2 + 2 = ?</div>
+
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="setMathMode('add')">➕ Add</button>
+      <button class="choiceBtn" onclick="setMathMode('subtract')">➖ Subtract</button>
+      <button class="choiceBtn" onclick="setMathMode('multiply')">✖️ Multiply</button>
+      <button class="choiceBtn" onclick="setMathMode('divide')">➗ Divide</button>
+    </div>
+
+    <div id="mathPracticeChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn blueBtn" onclick="newMathPracticeQuestion()">New Question</button>
+    <button class="actionBtn redBtn" onclick="startMathPracticeGame()">Restart</button>
+    <div class="message" id="mathPracticeMsg">Choose a math type, then pick the answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 8: POP BALLOONS
 ========================= -->
 <div id="balloonGame" class="gameScreen">
   <div class="gamePanel">
@@ -980,7 +1014,97 @@ function newEasyMathQuestion(){
 }
 
 /* =========================
-   GAME 7: POP BALLOONS
+   GAME 7: MATH PRACTICE
+========================= */
+let mathPracticeScore = 0;
+let mathPracticeAnswer = 0;
+let mathPracticeMode = "add";
+
+function startMathPracticeGame(){
+  stopAllGames();
+  mathPracticeScore = 0;
+  mathPracticeMode = "add";
+  document.getElementById("mathPracticeScore").innerText = mathPracticeScore;
+  document.getElementById("mathPracticeMsg").innerText = "Mode: Addition. Pick the correct answer.";
+  newMathPracticeQuestion();
+}
+
+function setMathMode(mode){
+  mathPracticeMode = mode;
+
+  if(mode === "add"){
+    document.getElementById("mathPracticeMsg").innerText = "Mode: Addition.";
+  }
+  if(mode === "subtract"){
+    document.getElementById("mathPracticeMsg").innerText = "Mode: Subtraction.";
+  }
+  if(mode === "multiply"){
+    document.getElementById("mathPracticeMsg").innerText = "Mode: Multiplication.";
+  }
+  if(mode === "divide"){
+    document.getElementById("mathPracticeMsg").innerText = "Mode: Division.";
+  }
+
+  newMathPracticeQuestion();
+}
+
+function newMathPracticeQuestion(){
+  let a = 0;
+  let b = 0;
+  let sign = "+";
+
+  if(mathPracticeMode === "add"){
+    a = rand(1,20);
+    b = rand(1,20);
+    sign = "+";
+    mathPracticeAnswer = a + b;
+  }
+
+  if(mathPracticeMode === "subtract"){
+    a = rand(5,30);
+    b = rand(1,a);
+    sign = "−";
+    mathPracticeAnswer = a - b;
+  }
+
+  if(mathPracticeMode === "multiply"){
+    a = rand(1,10);
+    b = rand(1,10);
+    sign = "×";
+    mathPracticeAnswer = a * b;
+  }
+
+  if(mathPracticeMode === "divide"){
+    b = rand(1,10);
+    mathPracticeAnswer = rand(1,10);
+    a = b * mathPracticeAnswer;
+    sign = "÷";
+  }
+
+  document.getElementById("mathPracticeQuestion").innerText = a + " " + sign + " " + b + " = ?";
+
+  let choices = [mathPracticeAnswer];
+  while(choices.length < 4){
+    let wrong = mathPracticeAnswer + rand(-10,10);
+    if(wrong >= 0 && wrong !== mathPracticeAnswer && !choices.includes(wrong)){
+      choices.push(wrong);
+    }
+  }
+
+  makeChoices("mathPracticeChoices", choices.map(String), String(mathPracticeAnswer), function(correct){
+    if(correct){
+      mathPracticeScore++;
+      document.getElementById("mathPracticeScore").innerText = mathPracticeScore;
+      document.getElementById("mathPracticeMsg").innerText = "Correct! Great job.";
+    }else{
+      document.getElementById("mathPracticeMsg").innerText = "Wrong. Try the next one.";
+    }
+    setTimeout(newMathPracticeQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 8: POP BALLOONS
 ========================= */
 let balloonScore = 0;
 let balloonColors = ["#ef4444","#3b82f6","#22c55e","#f59e0b","#ec4899","#8b5cf6"];
