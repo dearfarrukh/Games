@@ -239,6 +239,30 @@ canvas{
   transform:scale(0.96);
 }
 
+.raceHud{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.raceHudBox{
+  background:#111827;
+  color:white;
+  border-radius:16px;
+  padding:10px 6px;
+  text-align:center;
+  font-size:12px;
+  font-weight:800;
+}
+
+.raceHudBox span{
+  display:block;
+  margin-top:4px;
+  font-size:18px;
+  color:#facc15;
+}
+
 @media(max-width:430px){
   .app{
     padding:16px 4% 24px;
@@ -345,8 +369,8 @@ canvas{
 
     <button class="gameCard" onclick="openGame('racingGame'); startRacing();">
       <div class="gameIcon">🏎️</div>
-      <h2>Mini Racing</h2>
-      <p>Move car and avoid traffic.</p>
+      <h2>Car Racing Pro</h2>
+      <p>Adult arcade traffic racing game.</p>
     </button>
 
     <button class="gameCard" onclick="openGame('catchGame'); startCatch();">
@@ -510,22 +534,32 @@ canvas{
 </div>
 
 <!-- =========================
-     MINI RACING GAME
+     CAR RACING PRO GAME
 ========================= -->
 <div id="racingGame" class="gameScreen">
   <div class="gamePanel">
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
-      <h2>🏎️ Racing</h2>
+      <h2>🏎️ Car Racing Pro</h2>
       <div class="scoreBox">Score: <span id="raceScore">0</span></div>
     </div>
-    <canvas id="raceCanvas" width="400" height="520"></canvas>
-    <div class="controls">
-      <button class="controlBtn" onclick="raceMove(-55)">← Left</button>
-      <button class="controlBtn redBtn" onclick="startRacing()">Restart</button>
-      <button class="controlBtn" onclick="raceMove(55)">Right →</button>
+
+    <div class="raceHud">
+      <div class="raceHudBox">Lives<span id="raceLives">3</span></div>
+      <div class="raceHudBox">Level<span id="raceLevel">1</span></div>
+      <div class="raceHudBox">Speed<span id="raceSpeed">1x</span></div>
     </div>
-    <div class="message">Avoid cars and stay on the road.</div>
+
+    <canvas id="raceCanvas" width="400" height="560"></canvas>
+
+    <div class="controls">
+      <button class="controlBtn" onclick="raceMove(-1)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startRacing()">Restart</button>
+      <button class="controlBtn" onclick="raceMove(1)">Right →</button>
+    </div>
+
+    <button class="actionBtn grayBtn" onclick="toggleRacePause()" id="racePauseBtn">Pause</button>
+    <div class="message" id="raceMsg">Avoid traffic cars. Collect yellow coins. Speed increases as your score grows.</div>
   </div>
 </div>
 
@@ -1107,70 +1141,192 @@ function drawWhack(){
 }
 
 /* =========================
-   GAME 9: MINI RACING
+   GAME 9: CAR RACING PRO
 ========================= */
-let raceCtx, raceCar, raceEnemies, raceScore;
+let raceCtx, raceCar, raceEnemies, raceCoins, raceScore, raceLives, raceLevel, raceSpeed, raceRoadOffset, racePaused, raceFrame;
 
 function startRacing(){
   stopAllGames();
   const canvas = document.getElementById("raceCanvas");
   raceCtx = canvas.getContext("2d");
-  raceCar = {x:175,y:445,w:50,h:70};
+
+  raceCar = {lane:1,x:175,y:462,w:50,h:78,flash:0};
   raceEnemies = [];
+  raceCoins = [];
   raceScore = 0;
-  document.getElementById("raceScore").innerText = raceScore;
-  saveInterval(setInterval(updateRacing,25));
+  raceLives = 3;
+  raceLevel = 1;
+  raceSpeed = 1;
+  raceRoadOffset = 0;
+  racePaused = false;
+  raceFrame = 0;
+
+  updateRaceHud();
+  document.getElementById("raceMsg").innerText = "Avoid traffic cars. Collect yellow coins. Speed increases as your score grows.";
+  document.getElementById("racePauseBtn").innerText = "Pause";
+
+  canvas.onclick = function(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (400 / rect.width);
+    if(x < 200){
+      raceMove(-1);
+    }else{
+      raceMove(1);
+    }
+  };
+
+  saveInterval(setInterval(updateRacing,22));
 }
 
-function raceMove(amount){
+function updateRaceHud(){
+  document.getElementById("raceScore").innerText = raceScore;
+  document.getElementById("raceLives").innerText = raceLives;
+  document.getElementById("raceLevel").innerText = raceLevel;
+  document.getElementById("raceSpeed").innerText = raceSpeed.toFixed(1) + "x";
+}
+
+function toggleRacePause(){
   if(!raceCar) return;
-  raceCar.x += amount;
-  if(raceCar.x < 80) raceCar.x = 80;
-  if(raceCar.x + raceCar.w > 320) raceCar.x = 320 - raceCar.w;
+  racePaused = !racePaused;
+  document.getElementById("racePauseBtn").innerText = racePaused ? "Resume" : "Pause";
+  document.getElementById("raceMsg").innerText = racePaused ? "Game paused." : "Game resumed. Avoid traffic.";
+}
+
+function raceMove(direction){
+  if(!raceCar || racePaused) return;
+  raceCar.lane += direction;
+  if(raceCar.lane < 0) raceCar.lane = 0;
+  if(raceCar.lane > 2) raceCar.lane = 2;
+  raceCar.x = [95,175,255][raceCar.lane];
 }
 
 function updateRacing(){
-  if(Math.random() < 0.045){
-    raceEnemies.push({x:[95,175,255][rand(0,2)],y:-80,w:50,h:70,spd:rand(5,8)});
+  if(!raceCtx || racePaused) return;
+
+  raceFrame++;
+  raceLevel = Math.floor(raceScore / 250) + 1;
+  raceSpeed = Math.min(3.2, 1 + raceLevel * 0.18);
+  raceRoadOffset += 8 * raceSpeed;
+
+  if(raceFrame % Math.max(22, 60 - raceLevel * 4) === 0){
+    let lane = rand(0,2);
+    if(raceEnemies.length && raceEnemies[raceEnemies.length - 1].y < 90 && raceEnemies[raceEnemies.length - 1].lane === lane){
+      lane = (lane + 1) % 3;
+    }
+    raceEnemies.push({lane:lane,x:[95,175,255][lane],y:-90,w:50,h:78,spd:5.5 + raceSpeed * 2});
+  }
+
+  if(raceFrame % 95 === 0){
+    let lane = rand(0,2);
+    raceCoins.push({lane:lane,x:[120,200,280][lane],y:-30,r:12,spd:5 + raceSpeed * 2});
   }
 
   raceEnemies.forEach(c => c.y += c.spd);
-  raceEnemies = raceEnemies.filter(c => c.y < 600);
+  raceCoins.forEach(c => c.y += c.spd);
 
   raceEnemies.forEach(c => {
-    if(
-      raceCar.x < c.x+c.w &&
-      raceCar.x+raceCar.w > c.x &&
-      raceCar.y < c.y+c.h &&
-      raceCar.y+raceCar.h > c.y
-    ){
-      startRacing();
+    if(rectHit(raceCar,c)){
+      c.hit = true;
+      raceLives--;
+      raceCar.flash = 12;
+      document.getElementById("raceMsg").innerText = "Crash! Lives left: " + raceLives;
+      if(raceLives <= 0){
+        document.getElementById("raceMsg").innerText = "Game over. Final score: " + raceScore;
+        drawRace();
+        stopAllGames();
+      }
     }
   });
 
-  raceScore++;
-  document.getElementById("raceScore").innerText = Math.floor(raceScore/10);
+  raceCoins.forEach(c => {
+    if(circleRectHit(c,raceCar)){
+      c.hit = true;
+      raceScore += 25;
+      document.getElementById("raceMsg").innerText = "Coin collected +25";
+    }
+  });
 
+  raceEnemies = raceEnemies.filter(c => !c.hit && c.y < 650);
+  raceCoins = raceCoins.filter(c => !c.hit && c.y < 620);
+
+  raceScore += 1;
+  if(raceCar.flash > 0) raceCar.flash--;
+  updateRaceHud();
+  drawRace();
+}
+
+function rectHit(a,b){
+  return a.x < b.x + b.w &&
+         a.x + a.w > b.x &&
+         a.y < b.y + b.h &&
+         a.y + a.h > b.y;
+}
+
+function circleRectHit(circle, rect){
+  let closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.w));
+  let closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.h));
+  let dx = circle.x - closestX;
+  let dy = circle.y - closestY;
+  return (dx * dx + dy * dy) < circle.r * circle.r;
+}
+
+function drawRace(){
   raceCtx.fillStyle = "#052e16";
-  raceCtx.fillRect(0,0,400,520);
+  raceCtx.fillRect(0,0,400,560);
 
-  raceCtx.fillStyle = "#374151";
-  raceCtx.fillRect(70,0,260,520);
+  raceCtx.fillStyle = "#1f2937";
+  raceCtx.fillRect(62,0,276,560);
 
-  raceCtx.strokeStyle = "#facc15";
-  raceCtx.setLineDash([25,25]);
+  raceCtx.fillStyle = "#111827";
+  raceCtx.fillRect(72,0,256,560);
+
+  raceCtx.strokeStyle = "#f8fafc";
   raceCtx.lineWidth = 4;
+  raceCtx.setLineDash([30,28]);
+  raceCtx.lineDashOffset = -raceRoadOffset;
   raceCtx.beginPath();
-  raceCtx.moveTo(200,0);
-  raceCtx.lineTo(200,520);
+  raceCtx.moveTo(155,0);
+  raceCtx.lineTo(155,560);
+  raceCtx.moveTo(245,0);
+  raceCtx.lineTo(245,560);
   raceCtx.stroke();
   raceCtx.setLineDash([]);
 
-  raceCtx.fillStyle = "#3b82f6";
-  raceCtx.fillRect(raceCar.x,raceCar.y,raceCar.w,raceCar.h);
+  raceCoins.forEach(c => {
+    raceCtx.fillStyle = "#facc15";
+    raceCtx.beginPath();
+    raceCtx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    raceCtx.fill();
+    raceCtx.fillStyle = "#92400e";
+    raceCtx.font = "bold 13px Arial";
+    raceCtx.textAlign = "center";
+    raceCtx.fillText("$",c.x,c.y+5);
+    raceCtx.textAlign = "left";
+  });
 
-  raceCtx.fillStyle = "#ef4444";
-  raceEnemies.forEach(c => raceCtx.fillRect(c.x,c.y,c.w,c.h));
+  raceEnemies.forEach(c => drawCar(c.x,c.y,c.w,c.h,"#ef4444","#fecaca"));
+
+  let playerColor = raceCar.flash % 2 === 0 ? "#3b82f6" : "#facc15";
+  drawCar(raceCar.x,raceCar.y,raceCar.w,raceCar.h,playerColor,"#bfdbfe");
+}
+
+function drawCar(x,y,w,h,color,windowColor){
+  raceCtx.fillStyle = color;
+  raceCtx.fillRect(x,y,w,h);
+
+  raceCtx.fillStyle = windowColor;
+  raceCtx.fillRect(x+9,y+12,w-18,18);
+  raceCtx.fillRect(x+9,y+h-30,w-18,16);
+
+  raceCtx.fillStyle = "#020617";
+  raceCtx.fillRect(x-5,y+12,6,18);
+  raceCtx.fillRect(x+w-1,y+12,6,18);
+  raceCtx.fillRect(x-5,y+h-30,6,18);
+  raceCtx.fillRect(x+w-1,y+h-30,6,18);
+
+  raceCtx.fillStyle = "#f8fafc";
+  raceCtx.fillRect(x+6,y+2,10,5);
+  raceCtx.fillRect(x+w-16,y+2,10,5);
 }
 
 /* =========================
