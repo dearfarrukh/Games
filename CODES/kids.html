@@ -603,6 +603,13 @@ button{
 
     <div class="bigQuestion" id="mathPracticeQuestion">2 + 2 = ?</div>
 
+    <div class="message" style="margin-top:12px;">Choose number size:</div>
+    <div class="choiceGrid">
+      <button id="singleDigitBtn" class="choiceBtn" onclick="setMathDigitLevel('single')">1️⃣ Single Digit</button>
+      <button id="doubleDigitBtn" class="choiceBtn" onclick="setMathDigitLevel('double')">🔟 Double Digit</button>
+    </div>
+
+    <div class="message" style="margin-top:12px;">Choose math type:</div>
     <div class="choiceGrid">
       <button class="choiceBtn" onclick="setMathMode('add')">➕ Add</button>
       <button class="choiceBtn" onclick="setMathMode('subtract')">➖ Subtract</button>
@@ -1063,14 +1070,43 @@ function newEasyMathQuestion(){
 let mathPracticeScore = 0;
 let mathPracticeAnswer = 0;
 let mathPracticeMode = "add";
+let mathPracticeDigitLevel = "single";
 
 function startMathPracticeGame(){
   stopAllGames();
   mathPracticeScore = 0;
   mathPracticeMode = "add";
+  mathPracticeDigitLevel = "single";
   updateCorrectScore("mathPracticeScore", mathPracticeScore);
-  document.getElementById("mathPracticeMsg").innerText = "Mode: Addition. Pick the correct answer.";
+  updateMathDigitButtons();
+  document.getElementById("mathPracticeMsg").innerText = "Single digit addition. Pick the correct answer.";
   newMathPracticeQuestion();
+}
+
+function setMathDigitLevel(level){
+  mathPracticeDigitLevel = level;
+  updateMathDigitButtons();
+
+  if(level === "single"){
+    document.getElementById("mathPracticeMsg").innerText = "Single digit mode selected.";
+  }else{
+    document.getElementById("mathPracticeMsg").innerText = "Double digit mode selected.";
+  }
+
+  newMathPracticeQuestion();
+}
+
+function updateMathDigitButtons(){
+  const singleBtn = document.getElementById("singleDigitBtn");
+  const doubleBtn = document.getElementById("doubleDigitBtn");
+
+  if(!singleBtn || !doubleBtn) return;
+
+  singleBtn.style.background = mathPracticeDigitLevel === "single" ? "#16a34a" : "#f3f4f6";
+  singleBtn.style.color = mathPracticeDigitLevel === "single" ? "white" : "#111827";
+
+  doubleBtn.style.background = mathPracticeDigitLevel === "double" ? "#16a34a" : "#f3f4f6";
+  doubleBtn.style.color = mathPracticeDigitLevel === "double" ? "white" : "#111827";
 }
 
 function setMathMode(mode){
@@ -1096,31 +1132,52 @@ function newMathPracticeQuestion(){
   let a = 0;
   let b = 0;
   let sign = "+";
+  let maxWrongOffset = mathPracticeDigitLevel === "single" ? 5 : 20;
 
   if(mathPracticeMode === "add"){
-    a = rand(1,20);
-    b = rand(1,20);
+    if(mathPracticeDigitLevel === "single"){
+      a = rand(1,9);
+      b = rand(1,9);
+    }else{
+      a = rand(10,99);
+      b = rand(10,99);
+    }
     sign = "+";
     mathPracticeAnswer = a + b;
   }
 
   if(mathPracticeMode === "subtract"){
-    a = rand(5,30);
-    b = rand(1,a);
+    if(mathPracticeDigitLevel === "single"){
+      a = rand(2,9);
+      b = rand(1,a);
+    }else{
+      a = rand(20,99);
+      b = rand(10,a);
+    }
     sign = "−";
     mathPracticeAnswer = a - b;
   }
 
   if(mathPracticeMode === "multiply"){
-    a = rand(1,10);
-    b = rand(1,10);
+    if(mathPracticeDigitLevel === "single"){
+      a = rand(1,9);
+      b = rand(1,9);
+    }else{
+      a = rand(10,25);
+      b = rand(2,12);
+    }
     sign = "×";
     mathPracticeAnswer = a * b;
   }
 
   if(mathPracticeMode === "divide"){
-    b = rand(1,10);
-    mathPracticeAnswer = rand(1,10);
+    if(mathPracticeDigitLevel === "single"){
+      b = rand(1,9);
+      mathPracticeAnswer = rand(1,9);
+    }else{
+      b = rand(2,12);
+      mathPracticeAnswer = rand(10,25);
+    }
     a = b * mathPracticeAnswer;
     sign = "÷";
   }
@@ -1129,7 +1186,7 @@ function newMathPracticeQuestion(){
 
   let choices = [mathPracticeAnswer];
   while(choices.length < 4){
-    let wrong = mathPracticeAnswer + rand(-10,10);
+    let wrong = mathPracticeAnswer + rand(-maxWrongOffset,maxWrongOffset);
     if(wrong >= 0 && wrong !== mathPracticeAnswer && !choices.includes(wrong)){
       choices.push(wrong);
     }
