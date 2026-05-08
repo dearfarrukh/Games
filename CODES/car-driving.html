@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Driving Car Game</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;background:#020617;color:white;overflow:hidden;}
+.gameWrap{width:100%;height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at top,#1e3a8a,#020617 62%);}
+.topBar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(2,6,23,0.88);backdrop-filter:blur(12px);box-shadow:0 8px 25px rgba(0,0,0,.35);z-index:2;}
+.backBtn,.smallBtn{border:0;border-radius:16px;background:rgba(255,255,255,.14);color:white;padding:11px 13px;font-size:14px;font-weight:900;box-shadow:inset 0 0 14px rgba(255,255,255,.08);}
+.title{text-align:center;line-height:1.1;}
+.title strong{font-size:18px;display:block;}
+.title span{font-size:11px;opacity:.8;}
+.hud{height:58px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 10px;background:rgba(15,23,42,.86);}
+.hudBox{border-radius:15px;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.12);text-align:center;padding:5px 3px;font-weight:900;}
+.hudBox small{display:block;font-size:10px;opacity:.75;}
+.hudBox span{display:block;font-size:18px;color:#facc15;margin-top:2px;}
+.canvasBox{flex:1;position:relative;padding:8px 10px 12px;}
+canvas{width:100%;height:100%;display:block;border-radius:28px;background:#111827;box-shadow:0 18px 45px rgba(0,0,0,.45),inset 0 0 0 3px rgba(255,255,255,.1);touch-action:none;}
+.controls{height:76px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:10px;background:rgba(2,6,23,.9);}
+.ctrl{border:0;border-radius:22px;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white;font-size:18px;font-weight:1000;box-shadow:0 10px 22px rgba(0,0,0,.28);}
+.ctrl.restart{background:linear-gradient(135deg,#ef4444,#f97316);}
+.ctrl:active,.smallBtn:active,.backBtn:active{transform:scale(.96);}
+.message{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);width:82%;background:rgba(2,6,23,.72);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:10px 12px;text-align:center;font-size:13px;font-weight:800;backdrop-filter:blur(8px);}
+@media(min-width:700px){.gameWrap{max-width:480px;margin:0 auto;}.topBar{border-radius:0 0 24px 24px;}}
+</style>
+</head>
+<body>
+<div class="gameWrap">
+  <div class="topBar">
+    <button class="backBtn" onclick="goBack()">← Back</button>
+    <div class="title"><strong>🚗 Driving Car</strong><span>Swipe lanes • Avoid traffic</span></div>
+    <button class="smallBtn" onclick="pauseGame()" id="pauseBtn">Pause</button>
+  </div>
+
+  <div class="hud">
+    <div class="hudBox"><small>Score</small><span id="scoreText">0</span></div>
+    <div class="hudBox"><small>Lanes</small><span id="lanesText">2</span></div>
+    <div class="hudBox"><small>Level</small><span id="levelText">1</span></div>
+    <div class="hudBox"><small>Best</small><span id="bestText">0</span></div>
+  </div>
+
+  <div class="canvasBox">
+    <canvas id="gameCanvas" width="420" height="720"></canvas>
+    <div class="message" id="gameMsg">2 lanes first. Swipe left/right. Pass cars and boxes for +1 point.</div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl" onclick="moveLane(-1)">← Left</button>
+    <button class="ctrl restart" onclick="startGame()">Restart</button>
+    <button class="ctrl" onclick="moveLane(1)">Right →</button>
+  </div>
+</div>
+
+<script>
+let canvas,ctx;
+let player,obstacles,roadY,score,best,level,laneCount,speed,gameOver,paused,loopId,touchStartX;
+
+function goBack(){ window.location.href = '../'; }
+
+function startGame(){
+  canvas=document.getElementById('gameCanvas');
+  ctx=canvas.getContext('2d');
+  clearInterval(loopId);
+  laneCount=2; score=0; level=1; speed=4.2; roadY=0; gameOver=false; paused=false;
+  best=Number(localStorage.getItem('realDrivingBest')||'0');
+  obstacles=[];
+  player={lane:0,x:0,y:590,w:60,h:98};
+  setPlayerX();
+  document.getElementById('pauseBtn').innerText='Pause';
+  document.getElementById('gameMsg').innerText='2 lanes first. Swipe left/right. Pass cars and boxes for +1 point.';
+  updateHud();
+  setupTouch();
+  draw();
+  loopId=setInterval(update,22);
+}
+
+function setupTouch(){
+  canvas.ontouchstart=function(e){touchStartX=e.touches[0].clientX;};
+  canvas.ontouchend=function(e){
+    let endX=e.changedTouches[0].clientX;
+    let diff=endX-touchStartX;
+    if(Math.abs(diff)>25) moveLane(diff>0?1:-1);
+  };
+  canvas.onclick=function(e){
+    let rect=canvas.getBoundingClientRect();
+    let x=e.clientX-rect.left;
+    moveLane(x<rect.width/2?-1:1);
+  };
+}
+
+function pauseGame(){
+  if(gameOver)return;
+  paused=!paused;
+  document.getElementById('pauseBtn').innerText=paused?'Resume':'Pause';
+  document.getElementById('gameMsg').innerText=paused?'Game paused.':'Game resumed.';
+}
+
+function centerForLane(lane){
+  if(laneCount===2) return lane===0?150:270;
+  return [105,210,315][lane];
+}
+function setPlayerX(){ player.x=centerForLane(player.lane)-player.w/2; }
+
+function moveLane(dir){
+  if(gameOver||paused)return;
+  player.lane+=dir;
+  if(player.lane<0)player.lane=0;
+  if(player.lane>laneCount-1)player.lane=laneCount-1;
+  setPlayerX();
+}
+
+function updateHud(){
+  document.getElementById('scoreText').innerText=score;
+  document.getElementById('lanesText').innerText=laneCount;
+  document.getElementById('levelText').innerText=level;
+  document.getElementById('bestText').innerText=best;
+}
+
+function update(){
+  if(paused||gameOver){draw();return;}
+  roadY+=speed;
+  level=Math.floor(score/10)+1;
+  speed=Math.min(11,4.2+level*.62);
+
+  if(score>=10&&laneCount===2){
+    laneCount=3; player.lane=1; setPlayerX();
+    document.getElementById('gameMsg').innerText='Level up! Now 3 lanes and more traffic.';
+  }
+
+  let spawnChance=laneCount===2?0.028:0.049;
+  if(Math.random()<spawnChance) spawnObstacle();
+
+  obstacles.forEach(o=>{
+    o.y+=speed+o.extra;
+    if(!o.scored&&o.y>player.y+player.h){
+      o.scored=true; score++;
+      if(score>best){best=score;localStorage.setItem('realDrivingBest',String(best));}
+    }
+    if(hit(player,o)){
+      gameOver=true;
+      document.getElementById('gameMsg').innerText='Crash! Final score '+score+'. Press Restart.';
+    }
+  });
+  obstacles=obstacles.filter(o=>o.y<820);
+  updateHud(); draw();
+}
+
+function spawnObstacle(){
+  let lane=Math.floor(Math.random()*laneCount);
+  if(obstacles.some(o=>o.lane===lane&&o.y<130)) lane=(lane+1)%laneCount;
+  let isBox=Math.random()<.30;
+  let c=centerForLane(lane);
+  obstacles.push({lane:lane,x:c-(isBox?34:30),y:-120,w:isBox?68:60,h:isBox?64:98,type:isBox?'box':'car',color:['#ef4444','#f97316','#8b5cf6','#06b6d4','#22c55e'][Math.floor(Math.random()*5)],extra:Math.random()*1.8,scored:false});
+}
+
+function hit(a,b){
+  return a.x+9<b.x+b.w-9&&a.x+a.w-9>b.x+9&&a.y+10<b.y+b.h-10&&a.y+a.h-10>b.y+10;
+}
+
+function draw(){
+  let w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  drawWorld(w,h); drawRoad(w,h); obstacles.forEach(o=>o.type==='box'?drawBox(o):drawCar(o,false)); drawCar(player,true);
+  if(paused||gameOver) drawOverlay(paused?'PAUSED':'CRASH!');
+}
+
+function drawWorld(w,h){
+  let sky=ctx.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#38bdf8');sky.addColorStop(.45,'#60a5fa');sky.addColorStop(1,'#14532d');ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#facc15';ctx.beginPath();ctx.arc(350,70,34,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#166534';ctx.fillRect(0,300,w,420);
+  for(let i=0;i<8;i++){let y=((i*105+roadY*.55)%820)-80;drawTree(25,y);drawBuilding(360,y+8,i);}
+}
+function drawTree(x,y){ctx.fillStyle='#78350f';ctx.fillRect(x+8,y+36,10,40);ctx.fillStyle='#15803d';ctx.beginPath();ctx.arc(x+13,y+30,24,0,Math.PI*2);ctx.fill();}
+function drawBuilding(x,y,i){ctx.fillStyle=i%2?'#0f766e':'#7c2d12';roundRect(x,y,34,70,5);ctx.fill();ctx.fillStyle='rgba(255,255,255,.72)';for(let r=0;r<3;r++)ctx.fillRect(x+8,y+10+r*18,6,7);}
+
+function drawRoad(w,h){
+  ctx.fillStyle='#334155';ctx.beginPath();ctx.moveTo(145,0);ctx.lineTo(275,0);ctx.lineTo(392,h);ctx.lineTo(28,h);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#111827';ctx.beginPath();ctx.moveTo(160,0);ctx.lineTo(260,0);ctx.lineTo(365,h);ctx.lineTo(55,h);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#f8fafc';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(160,0);ctx.lineTo(55,h);ctx.moveTo(260,0);ctx.lineTo(365,h);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,.82)';ctx.lineWidth=4;ctx.setLineDash([38,34]);ctx.lineDashOffset=-roadY;
+  ctx.beginPath();
+  if(laneCount===2){ctx.moveTo(210,0);ctx.lineTo(210,h);}else{ctx.moveTo(158,0);ctx.lineTo(158,h);ctx.moveTo(262,0);ctx.lineTo(262,h);}ctx.stroke();ctx.setLineDash([]);
+}
+
+function drawCar(c,isPlayer){
+  let x=c.x,y=c.y,w=c.w,h=c.h,color=isPlayer?'#2563eb':c.color;
+  ctx.fillStyle='rgba(0,0,0,.35)';ctx.beginPath();ctx.ellipse(x+w/2,y+h-2,w*.6,12,0,0,Math.PI*2);ctx.fill();
+  let g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#fff');g.addColorStop(.10,color);g.addColorStop(1,'#020617');ctx.fillStyle=g;roundRect(x,y,w,h,14);ctx.fill();
+  ctx.fillStyle=isPlayer?'#bfdbfe':'#e0f2fe';roundRect(x+10,y+14,w-20,22,6);ctx.fill();
+  ctx.fillStyle='#0f172a';roundRect(x+11,y+50,w-22,24,6);ctx.fill();
+  ctx.fillStyle='#020617';roundRect(x-6,y+18,9,25,4);ctx.fill();roundRect(x+w-3,y+18,9,25,4);ctx.fill();roundRect(x-6,y+h-38,9,25,4);ctx.fill();roundRect(x+w-3,y+h-38,9,25,4);ctx.fill();
+  ctx.fillStyle=isPlayer?'#fef3c7':'#fecaca';ctx.fillRect(x+8,isPlayer?y+3:y+h-9,12,5);ctx.fillRect(x+w-20,isPlayer?y+3:y+h-9,12,5);
+}
+function drawBox(o){let x=o.x,y=o.y,w=o.w,h=o.h;ctx.fillStyle='rgba(0,0,0,.35)';ctx.fillRect(x+5,y+h-3,w,8);let g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#fbbf24');g.addColorStop(1,'#92400e');ctx.fillStyle=g;roundRect(x,y,w,h,9);ctx.fill();ctx.strokeStyle='#78350f';ctx.lineWidth=3;ctx.strokeRect(x+7,y+7,w-14,h-14);}
+function drawOverlay(text){ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='white';ctx.textAlign='center';ctx.font='bold 44px Arial';ctx.fillText(text,210,330);ctx.font='bold 21px Arial';ctx.fillText('Score: '+score,210,365);ctx.textAlign='left';}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')moveLane(-1);if(e.key==='ArrowRight')moveLane(1);});
+startGame();
+</script>
+</body>
+</html>
