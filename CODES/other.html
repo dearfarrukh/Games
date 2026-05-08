@@ -1,1 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Other Games</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#111827,#7c2d12,#f97316,#facc15);
+  color:#111827;
+  overflow-x:hidden;
+}
+
+button{
+  font-family:inherit;
+}
+
+.app{
+  width:100%;
+  min-height:100vh;
+  padding:18px 5% 28px;
+}
+
+.topbar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.backBtn,
+.homeBtn{
+  border:0;
+  background:rgba(255,255,255,0.24);
+  color:white;
+  border-radius:18px;
+  padding:12px 14px;
+  font-size:15px;
+  font-weight:800;
+  box-shadow:0 8px 20px rgba(0,0,0,0.18);
+}
+
+.titleBox{
+  flex:1;
+  text-align:center;
+  color:white;
+}
+
+.titleBox h1{
+  margin:0;
+  font-size:27px;
+}
+
+.titleBox p{
+  margin:4px 0 0;
+  font-size:12px;
+  opacity:0.95;
+}
+
+.menuGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.gameCard{
+  border:0;
+  background:white;
+  border-radius:25px;
+  padding:18px 10px;
+  min-height:132px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.18);
+  text-align:center;
+  cursor:pointer;
+}
+
+.gameCard:active,
+.backBtn:active,
+.homeBtn:active,
+.actionBtn:active,
+.choiceBtn:active,
+.tile:active,
+.bigButton:active{
+  transform:scale(0.96);
+}
+
+.gameIcon{
+  font-size:40px;
+  margin-bottom:8px;
+}
+
+.gameCard h2{
+  margin:0;
+  font-size:17px;
+}
+
+.gameCard p{
+  margin:7px 0 0;
+  font-size:12px;
+  color:#6b7280;
+  line-height:1.35;
+}
+
+.gameScreen{
+  display:none;
+  width:100%;
+  min-height:100vh;
+  padding:16px 5% 24px;
+}
+
+.gamePanel{
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  background:white;
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.22);
+}
+
+.gameHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.gameHeader h2{
+  margin:0;
+  font-size:21px;
+  text-align:center;
+}
+
+.scoreBox{
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:9px 12px;
+  font-weight:900;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.bigQuestion{
+  width:100%;
+  min-height:130px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#f97316,#facc15);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px;
+  font-size:34px;
+  font-weight:900;
+  line-height:1.25;
+}
+
+.choiceGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.choiceBtn{
+  border:0;
+  border-radius:18px;
+  padding:18px 10px;
+  background:#f3f4f6;
+  font-size:19px;
+  font-weight:900;
+  cursor:pointer;
+  line-height:1.25;
+}
+
+.actionBtn{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  background:#16a34a;
+  color:white;
+  padding:14px 10px;
+  margin-top:12px;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.redBtn{
+  background:#ef4444;
+}
+
+.blueBtn{
+  background:#2563eb;
+}
+
+.grayBtn{
+  background:#6b7280;
+}
+
+.purpleBtn{
+  background:#7c3aed;
+}
+
+.message{
+  margin-top:10px;
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+  font-weight:800;
+  color:#374151;
+  line-height:1.4;
+}
+
+.bigResult{
+  width:100%;
+  min-height:220px;
+  border-radius:28px;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:74px;
+  font-weight:900;
+  margin-top:10px;
+  box-shadow:inset 0 0 0 6px rgba(255,255,255,0.08);
+}
+
+.bigButton{
+  width:100%;
+  min-height:230px;
+  border:0;
+  border-radius:30px;
+  background:linear-gradient(135deg,#2563eb,#7c3aed);
+  color:white;
+  font-size:38px;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:10px;
+  padding:18px;
+}
+
+.board3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.board4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.tile{
+  border:0;
+  border-radius:18px;
+  min-height:76px;
+  background:#f3f4f6;
+  font-size:30px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.tile.good{
+  background:#22c55e;
+  color:white;
+}
+
+.tile.bad{
+  background:#ef4444;
+  color:white;
+}
+
+.inputBox{
+  width:100%;
+  border:2px solid #e5e7eb;
+  border-radius:18px;
+  padding:15px;
+  font-size:24px;
+  font-weight:900;
+  text-align:center;
+  outline:none;
+  margin-top:12px;
+  user-select:text;
+}
+
+.timerBox{
+  width:100%;
+  border-radius:26px;
+  background:linear-gradient(135deg,#0f172a,#334155);
+  color:white;
+  padding:32px 15px;
+  text-align:center;
+  margin-top:10px;
+}
+
+.timerBox .time{
+  font-size:58px;
+  font-weight:900;
+}
+
+.timerBox .label{
+  font-size:15px;
+  opacity:0.9;
+  margin-top:6px;
+}
+
+@media(max-width:430px){
+  .app{
+    padding:16px 4% 24px;
+  }
+
+  .titleBox h1{
+    font-size:24px;
+  }
+
+  .menuGrid{
+    gap:12px;
+  }
+
+  .gameCard{
+    min-height:125px;
+    border-radius:23px;
+  }
+
+  .gameIcon{
+    font-size:35px;
+  }
+
+  .gameCard h2{
+    font-size:15px;
+  }
+
+  .gamePanel{
+    padding:13px;
+    border-radius:25px;
+  }
+
+  .gameHeader h2{
+    font-size:18px;
+  }
+
+  .bigQuestion{
+    font-size:28px;
+  }
+
+  .bigResult{
+    min-height:200px;
+    font-size:62px;
+  }
+
+  .bigButton{
+    min-height:210px;
+    font-size:32px;
+  }
+
+  .tile{
+    min-height:66px;
+    font-size:26px;
+  }
+
+  .timerBox .time{
+    font-size:48px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     OTHER GAMES MAIN MENU
+========================= -->
+<div id="mainMenu" class="app">
+
+  <div class="topbar">
+    <button class="backBtn" onclick="goMainWebsite()">← Main</button>
+    <div class="titleBox">
+      <h1>🎲 Other Games</h1>
+      <p>10 fun mini games and challenges</p>
+    </div>
+    <button class="homeBtn" onclick="showMenu()">Home</button>
+  </div>
+
+  <div class="menuGrid">
+
+    <button class="gameCard" onclick="openGame('diceGame'); startDiceGame();">
+      <div class="gameIcon">🎲</div>
+      <h2>Dice Roll</h2>
+      <p>Roll a dice and get random numbers.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('coinGame'); startCoinGame();">
+      <div class="gameIcon">🪙</div>
+      <h2>Coin Flip</h2>
+      <p>Heads or tails guessing game.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('rpsGame'); startRpsGame();">
+      <div class="gameIcon">✊</div>
+      <h2>Rock Paper Scissors</h2>
+      <p>Play against the computer.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('cardGuessGame'); startCardGuessGame();">
+      <div class="gameIcon">🃏</div>
+      <h2>Card Guess</h2>
+      <p>Guess red or black card.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('stopwatchGame'); startStopwatchGame();">
+      <div class="gameIcon">⏱️</div>
+      <h2>Stopwatch Challenge</h2>
+      <p>Stop close to 10 seconds.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('luckyNumberGame'); startLuckyNumberGame();">
+      <div class="gameIcon">🍀</div>
+      <h2>Lucky Number</h2>
+      <p>Guess number from 1 to 10.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('emojiGuessGame'); startEmojiGuessGame();">
+      <div class="gameIcon">😀</div>
+      <h2>Emoji Guess</h2>
+      <p>Guess the word from emoji.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('quickTapGame'); startQuickTapGame();">
+      <div class="gameIcon">👆</div>
+      <h2>Quick Tap</h2>
+      <p>Tap as many times as possible.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('oddEvenGame'); startOddEvenGame();">
+      <div class="gameIcon">🔢</div>
+      <h2>Odd or Even</h2>
+      <p>Pick if number is odd or even.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('higherLowerGame'); startHigherLowerGame();">
+      <div class="gameIcon">📈</div>
+      <h2>Higher Lower</h2>
+      <p>Guess if next number is higher.</p>
+    </button>
+
+  </div>
+</div>
+
+<!-- =========================
+     GAME 1: DICE ROLL
+========================= -->
+<div id="diceGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🎲 Dice Roll</h2>
+      <div class="scoreBox">Rolls: <span id="diceRolls">0</span></div>
+    </div>
+
+    <div class="bigResult" id="diceResult">🎲</div>
+    <button class="actionBtn blueBtn" onclick="rollDice()">Roll Dice</button>
+    <button class="actionBtn redBtn" onclick="startDiceGame()">Restart</button>
+    <div class="message" id="diceMsg">Press roll to throw the dice.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 2: COIN FLIP
+========================= -->
+<div id="coinGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🪙 Coin Flip</h2>
+      <div class="scoreBox">Score: <span id="coinScore">0</span></div>
+    </div>
+
+    <div class="bigResult" id="coinResult">🪙</div>
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="flipCoin('Heads')">Heads</button>
+      <button class="choiceBtn" onclick="flipCoin('Tails')">Tails</button>
+    </div>
+    <button class="actionBtn redBtn" onclick="startCoinGame()">Restart</button>
+    <div class="message" id="coinMsg">Guess heads or tails.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 3: ROCK PAPER SCISSORS
+========================= -->
+<div id="rpsGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>✊ Rock Paper Scissors</h2>
+      <div class="scoreBox">Score: <span id="rpsScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="rpsResult">Choose your move</div>
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="playRps('Rock')">✊ Rock</button>
+      <button class="choiceBtn" onclick="playRps('Paper')">✋ Paper</button>
+      <button class="choiceBtn" onclick="playRps('Scissors')">✌️ Scissors</button>
+      <button class="choiceBtn" onclick="playRps('Rock')">🎮 Play</button>
+    </div>
+    <button class="actionBtn redBtn" onclick="startRpsGame()">Restart</button>
+    <div class="message" id="rpsMsg">Win against the computer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 4: CARD GUESS
+========================= -->
+<div id="cardGuessGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🃏 Card Guess</h2>
+      <div class="scoreBox">Score: <span id="cardScore">0</span></div>
+    </div>
+
+    <div class="bigResult" id="cardResult">🂠</div>
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="guessCardColor('Red')">Red</button>
+      <button class="choiceBtn" onclick="guessCardColor('Black')">Black</button>
+    </div>
+    <button class="actionBtn redBtn" onclick="startCardGuessGame()">Restart</button>
+    <div class="message" id="cardMsg">Guess if the card is red or black.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 5: STOPWATCH CHALLENGE
+========================= -->
+<div id="stopwatchGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>⏱️ Stopwatch</h2>
+      <div class="scoreBox">Best: <span id="stopBest">--</span></div>
+    </div>
+
+    <div class="timerBox">
+      <div class="time" id="stopTime">0.00</div>
+      <div class="label">Try to stop at 10.00 seconds</div>
+    </div>
+
+    <button class="actionBtn blueBtn" onclick="toggleStopwatch()">Start / Stop</button>
+    <button class="actionBtn redBtn" onclick="startStopwatchGame()">Restart</button>
+    <div class="message" id="stopMsg">Press Start, then stop near 10 seconds.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 6: LUCKY NUMBER
+========================= -->
+<div id="luckyNumberGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🍀 Lucky Number</h2>
+      <div class="scoreBox">Score: <span id="luckyScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion">Guess the number 1 to 10</div>
+    <input id="luckyInput" class="inputBox" type="number" min="1" max="10" placeholder="Enter number">
+    <button class="actionBtn blueBtn" onclick="checkLuckyNumber()">Check</button>
+    <button class="actionBtn redBtn" onclick="startLuckyNumberGame()">New Number</button>
+    <div class="message" id="luckyMsg">Type a number and press Check.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 7: EMOJI GUESS
+========================= -->
+<div id="emojiGuessGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>😀 Emoji Guess</h2>
+      <div class="scoreBox">Score: <span id="emojiScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="emojiQuestion">🍎</div>
+    <div id="emojiChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startEmojiGuessGame()">Restart</button>
+    <div class="message" id="emojiMsg">Guess the word from emoji.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 8: QUICK TAP
+========================= -->
+<div id="quickTapGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>👆 Quick Tap</h2>
+      <div class="scoreBox">Time: <span id="quickTime">10</span></div>
+    </div>
+
+    <button class="bigButton" onclick="quickTap()">Tap<br><span id="quickScore">0</span></button>
+    <button class="actionBtn redBtn" onclick="startQuickTapGame()">Restart</button>
+    <div class="message" id="quickMsg">Tap as many times as you can in 10 seconds.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 9: ODD OR EVEN
+========================= -->
+<div id="oddEvenGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔢 Odd or Even</h2>
+      <div class="scoreBox">Score: <span id="oddEvenScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="oddEvenNumber">7</div>
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="checkOddEven('Odd')">Odd</button>
+      <button class="choiceBtn" onclick="checkOddEven('Even')">Even</button>
+    </div>
+    <button class="actionBtn redBtn" onclick="startOddEvenGame()">Restart</button>
+    <div class="message" id="oddEvenMsg">Choose odd or even.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 10: HIGHER LOWER
+========================= -->
+<div id="higherLowerGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>📈 Higher Lower</h2>
+      <div class="scoreBox">Score: <span id="higherScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="higherNumber">Current: 50</div>
+    <div class="choiceGrid">
+      <button class="choiceBtn" onclick="guessHigherLower('Higher')">Higher</button>
+      <button class="choiceBtn" onclick="guessHigherLower('Lower')">Lower</button>
+    </div>
+    <button class="actionBtn redBtn" onclick="startHigherLowerGame()">Restart</button>
+    <div class="message" id="higherMsg">Will next number be higher or lower?</div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   GLOBAL PAGE LOGIC
+========================= */
+let activeTimers = [];
+
+function saveTimer(id){
+  activeTimers.push(id);
+}
+
+function stopAllGames(){
+  activeTimers.forEach(id => clearTimeout(id));
+  activeTimers.forEach(id => clearInterval(id));
+  activeTimers = [];
+}
+
+function openGame(id){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "none";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function showMenu(){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "block";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  window.scrollTo(0,0);
+}
+
+function goMainWebsite(){
+  window.location.href = "../";
+}
+
+function rand(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function makeChoices(containerId, choices, correctAnswer, callback){
+  const box = document.getElementById(containerId);
+  box.innerHTML = "";
+
+  shuffleArray(choices);
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "choiceBtn";
+    btn.innerText = choice;
+    btn.onclick = function(){
+      callback(choice === correctAnswer, choice);
+    };
+    box.appendChild(btn);
+  });
+}
+
+/* =========================
+   GAME 1: DICE ROLL
+========================= */
+let diceRolls = 0;
+
+function startDiceGame(){
+  stopAllGames();
+  diceRolls = 0;
+  document.getElementById("diceRolls").innerText = diceRolls;
+  document.getElementById("diceResult").innerText = "🎲";
+  document.getElementById("diceMsg").innerText = "Press roll to throw the dice.";
+}
+
+function rollDice(){
+  const diceFaces = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+  const number = rand(1,6);
+  diceRolls++;
+  document.getElementById("diceRolls").innerText = diceRolls;
+  document.getElementById("diceResult").innerText = diceFaces[number - 1];
+  document.getElementById("diceMsg").innerText = "You rolled " + number + ".";
+}
+
+/* =========================
+   GAME 2: COIN FLIP
+========================= */
+let coinScore = 0;
+
+function startCoinGame(){
+  stopAllGames();
+  coinScore = 0;
+  document.getElementById("coinScore").innerText = coinScore;
+  document.getElementById("coinResult").innerText = "🪙";
+  document.getElementById("coinMsg").innerText = "Guess heads or tails.";
+}
+
+function flipCoin(guess){
+  const result = Math.random() < 0.5 ? "Heads" : "Tails";
+  document.getElementById("coinResult").innerText = result === "Heads" ? "🙂" : "🪙";
+
+  if(guess === result){
+    coinScore++;
+    document.getElementById("coinScore").innerText = coinScore;
+    document.getElementById("coinMsg").innerText = "Correct! It was " + result + ".";
+  }else{
+    document.getElementById("coinMsg").innerText = "Wrong. It was " + result + ".";
+  }
+}
+
+/* =========================
+   GAME 3: ROCK PAPER SCISSORS
+========================= */
+let rpsScore = 0;
+
+function startRpsGame(){
+  stopAllGames();
+  rpsScore = 0;
+  document.getElementById("rpsScore").innerText = rpsScore;
+  document.getElementById("rpsResult").innerText = "Choose your move";
+  document.getElementById("rpsMsg").innerText = "Win against the computer.";
+}
+
+function playRps(player){
+  const moves = ["Rock","Paper","Scissors"];
+  const computer = moves[rand(0,2)];
+
+  let result = "Draw";
+
+  if(
+    (player === "Rock" && computer === "Scissors") ||
+    (player === "Paper" && computer === "Rock") ||
+    (player === "Scissors" && computer === "Paper")
+  ){
+    result = "You Win";
+    rpsScore++;
+  }
+
+  if(
+    (computer === "Rock" && player === "Scissors") ||
+    (computer === "Paper" && player === "Rock") ||
+    (computer === "Scissors" && player === "Paper")
+  ){
+    result = "Computer Wins";
+  }
+
+  document.getElementById("rpsScore").innerText = rpsScore;
+  document.getElementById("rpsResult").innerText = player + " vs " + computer;
+  document.getElementById("rpsMsg").innerText = result;
+}
+
+/* =========================
+   GAME 4: CARD GUESS
+========================= */
+let cardScore = 0;
+
+function startCardGuessGame(){
+  stopAllGames();
+  cardScore = 0;
+  document.getElementById("cardScore").innerText = cardScore;
+  document.getElementById("cardResult").innerText = "🂠";
+  document.getElementById("cardMsg").innerText = "Guess if the card is red or black.";
+}
+
+function guessCardColor(guess){
+  const colors = ["Red","Black"];
+  const result = colors[rand(0,1)];
+  const redCards = ["♥️","♦️"];
+  const blackCards = ["♠️","♣️"];
+
+  if(result === "Red"){
+    document.getElementById("cardResult").innerText = redCards[rand(0,1)];
+  }else{
+    document.getElementById("cardResult").innerText = blackCards[rand(0,1)];
+  }
+
+  if(guess === result){
+    cardScore++;
+    document.getElementById("cardScore").innerText = cardScore;
+    document.getElementById("cardMsg").innerText = "Correct! It was " + result + ".";
+  }else{
+    document.getElementById("cardMsg").innerText = "Wrong. It was " + result + ".";
+  }
+}
+
+/* =========================
+   GAME 5: STOPWATCH CHALLENGE
+========================= */
+let stopRunning = false;
+let stopStartTime = 0;
+let stopElapsed = 0;
+let stopInterval = null;
+let stopBest = null;
+
+function startStopwatchGame(){
+  stopAllGames();
+  stopRunning = false;
+  stopStartTime = 0;
+  stopElapsed = 0;
+  stopInterval = null;
+  document.getElementById("stopTime").innerText = "0.00";
+  document.getElementById("stopMsg").innerText = "Press Start, then stop near 10 seconds.";
+}
+
+function toggleStopwatch(){
+  if(!stopRunning){
+    stopRunning = true;
+    stopStartTime = Date.now();
+
+    stopInterval = setInterval(function(){
+      stopElapsed = (Date.now() - stopStartTime) / 1000;
+      document.getElementById("stopTime").innerText = stopElapsed.toFixed(2);
+    },30);
+
+    saveTimer(stopInterval);
+    document.getElementById("stopMsg").innerText = "Stop close to 10.00!";
+  }else{
+    stopRunning = false;
+    clearInterval(stopInterval);
+
+    const diff = Math.abs(10 - stopElapsed);
+    document.getElementById("stopMsg").innerText = "You stopped at " + stopElapsed.toFixed(2) + ". Difference: " + diff.toFixed(2);
+
+    if(stopBest === null || diff < stopBest){
+      stopBest = diff;
+      document.getElementById("stopBest").innerText = diff.toFixed(2);
+    }
+  }
+}
+
+/* =========================
+   GAME 6: LUCKY NUMBER
+========================= */
+let luckyNumber = 0;
+let luckyScore = 0;
+
+function startLuckyNumberGame(){
+  stopAllGames();
+  luckyNumber = rand(1,10);
+  luckyScore = 0;
+  document.getElementById("luckyScore").innerText = luckyScore;
+  document.getElementById("luckyInput").value = "";
+  document.getElementById("luckyMsg").innerText = "Type a number and press Check.";
+}
+
+function checkLuckyNumber(){
+  const guess = Number(document.getElementById("luckyInput").value);
+
+  if(!guess || guess < 1 || guess > 10){
+    document.getElementById("luckyMsg").innerText = "Enter number from 1 to 10.";
+    return;
+  }
+
+  if(guess === luckyNumber){
+    luckyScore++;
+    document.getElementById("luckyScore").innerText = luckyScore;
+    document.getElementById("luckyMsg").innerText = "Correct! New number is ready.";
+    luckyNumber = rand(1,10);
+    document.getElementById("luckyInput").value = "";
+  }else if(guess < luckyNumber){
+    document.getElementById("luckyMsg").innerText = "Too low. Try higher.";
+  }else{
+    document.getElementById("luckyMsg").innerText = "Too high. Try lower.";
+  }
+}
+
+/* =========================
+   GAME 7: EMOJI GUESS
+========================= */
+let emojiScore = 0;
+let emojiItems = [
+  {emoji:"🍎", word:"Apple"},
+  {emoji:"🚗", word:"Car"},
+  {emoji:"🏠", word:"House"},
+  {emoji:"🐶", word:"Dog"},
+  {emoji:"⭐", word:"Star"},
+  {emoji:"🌙", word:"Moon"},
+  {emoji:"☀️", word:"Sun"},
+  {emoji:"📱", word:"Phone"},
+  {emoji:"⌚", word:"Watch"},
+  {emoji:"⚽", word:"Ball"}
+];
+let currentEmoji = null;
+
+function startEmojiGuessGame(){
+  stopAllGames();
+  emojiScore = 0;
+  document.getElementById("emojiScore").innerText = emojiScore;
+  document.getElementById("emojiMsg").innerText = "Guess the word from emoji.";
+  newEmojiQuestion();
+}
+
+function newEmojiQuestion(){
+  currentEmoji = emojiItems[rand(0,emojiItems.length - 1)];
+  document.getElementById("emojiQuestion").innerText = currentEmoji.emoji;
+
+  let choices = [currentEmoji.word];
+  while(choices.length < 4){
+    let word = emojiItems[rand(0,emojiItems.length - 1)].word;
+    if(!choices.includes(word)) choices.push(word);
+  }
+
+  makeChoices("emojiChoices", choices, currentEmoji.word, function(correct){
+    if(correct){
+      emojiScore++;
+      document.getElementById("emojiScore").innerText = emojiScore;
+      document.getElementById("emojiMsg").innerText = "Correct!";
+    }else{
+      document.getElementById("emojiMsg").innerText = "Wrong. New emoji.";
+    }
+    setTimeout(newEmojiQuestion,500);
+  });
+}
+
+/* =========================
+   GAME 8: QUICK TAP
+========================= */
+let quickScore = 0;
+let quickTime = 10;
+let quickActive = false;
+
+function startQuickTapGame(){
+  stopAllGames();
+  quickScore = 0;
+  quickTime = 10;
+  quickActive = true;
+  document.getElementById("quickScore").innerText = quickScore;
+  document.getElementById("quickTime").innerText = quickTime;
+  document.getElementById("quickMsg").innerText = "Tap as many times as you can in 10 seconds.";
+
+  const timer = setInterval(function(){
+    quickTime--;
+    document.getElementById("quickTime").innerText = quickTime;
+
+    if(quickTime <= 0){
+      quickActive = false;
+      clearInterval(timer);
+      document.getElementById("quickMsg").innerText = "Time is up! Your score is " + quickScore + ".";
+    }
+  },1000);
+
+  saveTimer(timer);
+}
+
+function quickTap(){
+  if(!quickActive) return;
+  quickScore++;
+  document.getElementById("quickScore").innerText = quickScore;
+}
+
+/* =========================
+   GAME 9: ODD OR EVEN
+========================= */
+let oddEvenScore = 0;
+let currentOddEven = 0;
+
+function startOddEvenGame(){
+  stopAllGames();
+  oddEvenScore = 0;
+  document.getElementById("oddEvenScore").innerText = oddEvenScore;
+  document.getElementById("oddEvenMsg").innerText = "Choose odd or even.";
+  newOddEvenQuestion();
+}
+
+function newOddEvenQuestion(){
+  currentOddEven = rand(1,100);
+  document.getElementById("oddEvenNumber").innerText = currentOddEven;
+}
+
+function checkOddEven(choice){
+  const correct = currentOddEven % 2 === 0 ? "Even" : "Odd";
+
+  if(choice === correct){
+    oddEvenScore++;
+    document.getElementById("oddEvenScore").innerText = oddEvenScore;
+    document.getElementById("oddEvenMsg").innerText = "Correct!";
+  }else{
+    document.getElementById("oddEvenMsg").innerText = "Wrong. It was " + correct + ".";
+  }
+
+  setTimeout(newOddEvenQuestion,500);
+}
+
+/* =========================
+   GAME 10: HIGHER LOWER
+========================= */
+let higherScore = 0;
+let currentHigherNumber = 50;
+
+function startHigherLowerGame(){
+  stopAllGames();
+  higherScore = 0;
+  currentHigherNumber = rand(10,90);
+  document.getElementById("higherScore").innerText = higherScore;
+  document.getElementById("higherNumber").innerText = "Current: " + currentHigherNumber;
+  document.getElementById("higherMsg").innerText = "Will next number be higher or lower?";
+}
+
+function guessHigherLower(choice){
+  const nextNumber = rand(1,100);
+  let correct = "";
+
+  if(nextNumber > currentHigherNumber){
+    correct = "Higher";
+  }else if(nextNumber < currentHigherNumber){
+    correct = "Lower";
+  }else{
+    correct = choice;
+  }
+
+  if(choice === correct){
+    higherScore++;
+    document.getElementById("higherScore").innerText = higherScore;
+    document.getElementById("higherMsg").innerText = "Correct! Next was " + nextNumber + ".";
+  }else{
+    document.getElementById("higherMsg").innerText = "Wrong. Next was " + nextNumber + ".";
+  }
+
+  currentHigherNumber = nextNumber;
+  document.getElementById("higherNumber").innerText = "Current: " + currentHigherNumber;
+}
+</script>
+
+</body>
+</html>
