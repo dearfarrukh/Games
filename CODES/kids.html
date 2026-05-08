@@ -484,7 +484,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🎨 Color Match</h2>
-      <div class="scoreBox">Score: <span id="colorScore">0</span></div>
+      <div class="scoreBox"><span id="colorScore">0 correct / out of 12</span></div>
     </div>
 
     <div id="colorBox" class="colorBox">RED</div>
@@ -503,7 +503,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🔷 Shape Match</h2>
-      <div class="scoreBox">Score: <span id="shapeScore">0</span></div>
+      <div class="scoreBox"><span id="shapeScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="shapeQuestion">●</div>
@@ -522,7 +522,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🐶 Animal Match</h2>
-      <div class="scoreBox">Score: <span id="animalScore">0</span></div>
+      <div class="scoreBox"><span id="animalScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="animalQuestion">🐶</div>
@@ -541,7 +541,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🔢 Counting</h2>
-      <div class="scoreBox">Score: <span id="countScore">0</span></div>
+      <div class="scoreBox"><span id="countScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="countQuestion">🍎 🍎 🍎</div>
@@ -560,7 +560,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🔤 Alphabet</h2>
-      <div class="scoreBox">Score: <span id="alphabetScore">0</span></div>
+      <div class="scoreBox"><span id="alphabetScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="alphabetQuestion">A, B, ?</div>
@@ -579,7 +579,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>➕ Easy Math</h2>
-      <div class="scoreBox">Score: <span id="easyMathScore">0</span></div>
+      <div class="scoreBox"><span id="easyMathScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="easyMathQuestion">1 + 1 = ?</div>
@@ -598,7 +598,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🧮 Math Practice</h2>
-      <div class="scoreBox">Score: <span id="mathPracticeScore">0</span></div>
+      <div class="scoreBox"><span id="mathPracticeScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="mathPracticeQuestion">2 + 2 = ?</div>
@@ -626,7 +626,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🎈 Pop Balloons</h2>
-      <div class="scoreBox">Score: <span id="balloonScore">0</span></div>
+      <div class="scoreBox"><span id="balloonScore">0 balloons / out of 12</span></div>
     </div>
 
     <div id="balloonArea" class="tapArea"></div>
@@ -644,7 +644,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🃏 Kids Memory</h2>
-      <div class="scoreBox">Moves: <span id="kidsMemoryMoves">0</span></div>
+      <div class="scoreBox"><span id="kidsMemoryMoves">0 pairs / out of 8</span></div>
     </div>
 
     <div id="kidsMemoryBoard" class="board4"></div>
@@ -662,7 +662,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>🍎 Word Picture</h2>
-      <div class="scoreBox">Score: <span id="wordPicScore">0</span></div>
+      <div class="scoreBox"><span id="wordPicScore">0 correct / out of 12</span></div>
     </div>
 
     <div class="bigQuestion" id="wordPicQuestion">🍎</div>
@@ -681,7 +681,7 @@ button{
     <div class="gameHeader">
       <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
       <h2>👆 Tap Count</h2>
-      <div class="scoreBox"><span id="tapCountText">0/20</span></div>
+      <div class="scoreBox"><span id="tapCountText">0 taps / out of 20</span></div>
     </div>
 
     <div class="bigTapCircle" onclick="tapCountingGame()">
@@ -737,6 +737,26 @@ function rand(min,max){
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const KIDS_SCORE_TARGET = 12;
+
+function updateCorrectScore(id, correct, total = KIDS_SCORE_TARGET){
+  const el = document.getElementById(id);
+  if(el){
+    el.innerText = correct + " correct / out of " + total;
+  }
+}
+
+function updateCustomScore(id, label, correct, total){
+  const el = document.getElementById(id);
+  if(el){
+    el.innerText = correct + " " + label + " / out of " + total;
+  }
+}
+
+function isTargetDone(score){
+  return score >= KIDS_SCORE_TARGET;
+}
+
 function shuffleArray(arr){
   for(let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
@@ -780,7 +800,7 @@ let currentColor = null;
 function startColorGame(){
   stopAllGames();
   colorScore = 0;
-  document.getElementById("colorScore").innerText = colorScore;
+  updateCorrectScore("colorScore", colorScore);
   document.getElementById("colorMsg").innerText = "Choose the color name.";
   newColorQuestion();
 }
@@ -800,7 +820,11 @@ function newColorQuestion(){
   makeChoices("colorChoices", choices, currentColor.name, function(correct){
     if(correct){
       colorScore++;
-      document.getElementById("colorScore").innerText = colorScore;
+      updateCorrectScore("colorScore", colorScore);
+      if(isTargetDone(colorScore)){
+        document.getElementById("colorMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("colorMsg").innerText = "Good job!";
     }else{
       document.getElementById("colorMsg").innerText = "Try the next one.";
@@ -826,7 +850,7 @@ let currentShape = null;
 function startShapeGame(){
   stopAllGames();
   shapeScore = 0;
-  document.getElementById("shapeScore").innerText = shapeScore;
+  updateCorrectScore("shapeScore", shapeScore);
   document.getElementById("shapeMsg").innerText = "Pick the correct shape name.";
   newShapeQuestion();
 }
@@ -844,7 +868,11 @@ function newShapeQuestion(){
   makeChoices("shapeChoices", choices, currentShape.name, function(correct){
     if(correct){
       shapeScore++;
-      document.getElementById("shapeScore").innerText = shapeScore;
+      updateCorrectScore("shapeScore", shapeScore);
+      if(isTargetDone(shapeScore)){
+        document.getElementById("shapeMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("shapeMsg").innerText = "Correct!";
     }else{
       document.getElementById("shapeMsg").innerText = "Wrong. Try next one.";
@@ -872,7 +900,7 @@ let currentAnimal = null;
 function startAnimalGame(){
   stopAllGames();
   animalScore = 0;
-  document.getElementById("animalScore").innerText = animalScore;
+  updateCorrectScore("animalScore", animalScore);
   document.getElementById("animalMsg").innerText = "Pick the animal name.";
   newAnimalQuestion();
 }
@@ -890,7 +918,11 @@ function newAnimalQuestion(){
   makeChoices("animalChoices", choices, currentAnimal.name, function(correct){
     if(correct){
       animalScore++;
-      document.getElementById("animalScore").innerText = animalScore;
+      updateCorrectScore("animalScore", animalScore);
+      if(isTargetDone(animalScore)){
+        document.getElementById("animalMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("animalMsg").innerText = "Correct!";
     }else{
       document.getElementById("animalMsg").innerText = "Wrong. New animal.";
@@ -909,7 +941,7 @@ let countIcons = ["🍎","⭐","🎈","🍪","🧸","⚽"];
 function startCountGame(){
   stopAllGames();
   countScore = 0;
-  document.getElementById("countScore").innerText = countScore;
+  updateCorrectScore("countScore", countScore);
   document.getElementById("countMsg").innerText = "How many do you see?";
   newCountQuestion();
 }
@@ -928,7 +960,11 @@ function newCountQuestion(){
   makeChoices("countChoices", choices.map(String), String(countAnswer), function(correct){
     if(correct){
       countScore++;
-      document.getElementById("countScore").innerText = countScore;
+      updateCorrectScore("countScore", countScore);
+      if(isTargetDone(countScore)){
+        document.getElementById("countMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("countMsg").innerText = "Great counting!";
     }else{
       document.getElementById("countMsg").innerText = "Try next one.";
@@ -947,7 +983,7 @@ let alphabetAnswer = "";
 function startAlphabetGame(){
   stopAllGames();
   alphabetScore = 0;
-  document.getElementById("alphabetScore").innerText = alphabetScore;
+  updateCorrectScore("alphabetScore", alphabetScore);
   document.getElementById("alphabetMsg").innerText = "Pick the next letter.";
   newAlphabetQuestion();
 }
@@ -966,7 +1002,11 @@ function newAlphabetQuestion(){
   makeChoices("alphabetChoices", choices, alphabetAnswer, function(correct){
     if(correct){
       alphabetScore++;
-      document.getElementById("alphabetScore").innerText = alphabetScore;
+      updateCorrectScore("alphabetScore", alphabetScore);
+      if(isTargetDone(alphabetScore)){
+        document.getElementById("alphabetMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("alphabetMsg").innerText = "Correct!";
     }else{
       document.getElementById("alphabetMsg").innerText = "Wrong. Try next one.";
@@ -984,7 +1024,7 @@ let easyMathAnswer = 0;
 function startEasyMathGame(){
   stopAllGames();
   easyMathScore = 0;
-  document.getElementById("easyMathScore").innerText = easyMathScore;
+  updateCorrectScore("easyMathScore", easyMathScore);
   document.getElementById("easyMathMsg").innerText = "Choose the correct answer.";
   newEasyMathQuestion();
 }
@@ -1004,7 +1044,11 @@ function newEasyMathQuestion(){
   makeChoices("easyMathChoices", choices.map(String), String(easyMathAnswer), function(correct){
     if(correct){
       easyMathScore++;
-      document.getElementById("easyMathScore").innerText = easyMathScore;
+      updateCorrectScore("easyMathScore", easyMathScore);
+      if(isTargetDone(easyMathScore)){
+        document.getElementById("easyMathMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("easyMathMsg").innerText = "Correct!";
     }else{
       document.getElementById("easyMathMsg").innerText = "Wrong. New question.";
@@ -1024,7 +1068,7 @@ function startMathPracticeGame(){
   stopAllGames();
   mathPracticeScore = 0;
   mathPracticeMode = "add";
-  document.getElementById("mathPracticeScore").innerText = mathPracticeScore;
+  updateCorrectScore("mathPracticeScore", mathPracticeScore);
   document.getElementById("mathPracticeMsg").innerText = "Mode: Addition. Pick the correct answer.";
   newMathPracticeQuestion();
 }
@@ -1094,7 +1138,11 @@ function newMathPracticeQuestion(){
   makeChoices("mathPracticeChoices", choices.map(String), String(mathPracticeAnswer), function(correct){
     if(correct){
       mathPracticeScore++;
-      document.getElementById("mathPracticeScore").innerText = mathPracticeScore;
+      updateCorrectScore("mathPracticeScore", mathPracticeScore);
+      if(isTargetDone(mathPracticeScore)){
+        document.getElementById("mathPracticeMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("mathPracticeMsg").innerText = "Correct! Great job.";
     }else{
       document.getElementById("mathPracticeMsg").innerText = "Wrong. Try the next one.";
@@ -1112,7 +1160,7 @@ let balloonColors = ["#ef4444","#3b82f6","#22c55e","#f59e0b","#ec4899","#8b5cf6"
 function startBalloonGame(){
   stopAllGames();
   balloonScore = 0;
-  document.getElementById("balloonScore").innerText = balloonScore;
+  updateCustomScore("balloonScore", "balloons", balloonScore, 12);
   document.getElementById("balloonMsg").innerText = "Pop balloons before they disappear.";
   document.getElementById("balloonArea").innerHTML = "";
 
@@ -1135,11 +1183,11 @@ function createBalloon(){
 
   balloon.onclick = function(){
     balloonScore++;
-    document.getElementById("balloonScore").innerText = balloonScore;
+    updateCustomScore("balloonScore", "balloons", balloonScore, 12);
     balloon.remove();
 
-    if(balloonScore >= 20){
-      document.getElementById("balloonMsg").innerText = "You popped 20 balloons! Great job!";
+    if(balloonScore >= 12){
+      document.getElementById("balloonMsg").innerText = "Great job! You popped 12 balloons.";
       stopAllGames();
     }
   };
@@ -1176,7 +1224,7 @@ function startKidsMemory(){
   kidsMemoryLock = false;
   kidsMemoryMoves = 0;
   kidsMemoryMatched = 0;
-  document.getElementById("kidsMemoryMoves").innerText = "0";
+  updateCustomScore("kidsMemoryMoves", "pairs", 0, 8);
   document.getElementById("kidsMemoryMsg").innerText = "Find the matching pictures.";
   renderKidsMemoryBoard();
 }
@@ -1217,12 +1265,12 @@ function kidsMemoryClick(index){
   }
 
   kidsMemoryMoves++;
-  document.getElementById("kidsMemoryMoves").innerText = kidsMemoryMoves;
 
   if(kidsMemoryCards[kidsMemoryFirst].icon === card.icon){
     kidsMemoryCards[kidsMemoryFirst].matched = true;
     card.matched = true;
     kidsMemoryMatched += 2;
+    updateCustomScore("kidsMemoryMoves", "pairs", kidsMemoryMatched / 2, 8);
     kidsMemoryFirst = null;
     renderKidsMemoryBoard();
 
@@ -1262,7 +1310,7 @@ let currentWordPic = null;
 function startWordPictureGame(){
   stopAllGames();
   wordPicScore = 0;
-  document.getElementById("wordPicScore").innerText = wordPicScore;
+  updateCorrectScore("wordPicScore", wordPicScore);
   document.getElementById("wordPicMsg").innerText = "Pick the correct word.";
   newWordPicQuestion();
 }
@@ -1280,7 +1328,11 @@ function newWordPicQuestion(){
   makeChoices("wordPicChoices", choices, currentWordPic.word, function(correct){
     if(correct){
       wordPicScore++;
-      document.getElementById("wordPicScore").innerText = wordPicScore;
+      updateCorrectScore("wordPicScore", wordPicScore);
+      if(isTargetDone(wordPicScore)){
+        document.getElementById("wordPicMsg").innerText = "Great job! You got 12 correct.";
+        return;
+      }
       document.getElementById("wordPicMsg").innerText = "Correct!";
     }else{
       document.getElementById("wordPicMsg").innerText = "Wrong. Try next picture.";
@@ -1298,7 +1350,7 @@ function startTapCountGame(){
   stopAllGames();
   tapCount = 0;
   document.getElementById("tapCountNumber").innerText = tapCount;
-  document.getElementById("tapCountText").innerText = "0/20";
+  updateCustomScore("tapCountText", "taps", 0, 20);
   document.getElementById("tapCountMsg").innerText = "Tap until you reach 20.";
 }
 
@@ -1307,7 +1359,7 @@ function tapCountingGame(){
 
   tapCount++;
   document.getElementById("tapCountNumber").innerText = tapCount;
-  document.getElementById("tapCountText").innerText = tapCount + "/20";
+  updateCustomScore("tapCountText", "taps", tapCount, 20);
 
   if(tapCount === 20){
     document.getElementById("tapCountMsg").innerText = "Great job! You reached 20.";
