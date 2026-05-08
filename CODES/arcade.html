@@ -1,1 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Arcade Games</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#111827,#4f46e5,#06b6d4);
+  color:#111827;
+  overflow-x:hidden;
+}
+
+button{
+  font-family:inherit;
+}
+
+.app{
+  width:100%;
+  min-height:100vh;
+  padding:18px 5% 28px;
+}
+
+.topbar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.backBtn,
+.homeBtn{
+  border:0;
+  background:rgba(255,255,255,0.22);
+  color:white;
+  border-radius:18px;
+  padding:12px 14px;
+  font-size:15px;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(0,0,0,0.18);
+}
+
+.titleBox{
+  flex:1;
+  text-align:center;
+  color:white;
+}
+
+.titleBox h1{
+  margin:0;
+  font-size:27px;
+}
+
+.titleBox p{
+  margin:4px 0 0;
+  font-size:12px;
+  opacity:0.9;
+}
+
+.menuGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.gameCard{
+  border:0;
+  background:white;
+  border-radius:25px;
+  padding:18px 10px;
+  min-height:132px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.18);
+  text-align:center;
+  cursor:pointer;
+}
+
+.gameCard:active,
+.backBtn:active,
+.homeBtn:active,
+.controlBtn:active,
+.actionBtn:active{
+  transform:scale(0.96);
+}
+
+.gameIcon{
+  font-size:38px;
+  margin-bottom:8px;
+}
+
+.gameCard h2{
+  margin:0;
+  font-size:17px;
+}
+
+.gameCard p{
+  margin:7px 0 0;
+  font-size:12px;
+  color:#6b7280;
+  line-height:1.35;
+}
+
+.gameScreen{
+  display:none;
+  width:100%;
+  min-height:100vh;
+  padding:16px 5% 24px;
+}
+
+.gamePanel{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  background:white;
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.22);
+}
+
+.gameHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.gameHeader h2{
+  margin:0;
+  font-size:22px;
+}
+
+.scoreBox{
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:9px 12px;
+  font-weight:800;
+  font-size:14px;
+}
+
+canvas{
+  width:100%;
+  background:#111827;
+  border-radius:22px;
+  display:block;
+  touch-action:none;
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.controlBtn,
+.actionBtn{
+  border:0;
+  border-radius:18px;
+  background:#2563eb;
+  color:white;
+  padding:13px 8px;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.actionBtn{
+  width:100%;
+  margin-top:12px;
+  font-size:16px;
+  background:#16a34a;
+}
+
+.redBtn{
+  background:#ef4444;
+}
+
+.grayBtn{
+  background:#6b7280;
+}
+
+.message{
+  margin-top:10px;
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  color:#374151;
+}
+
+.bigTapArea{
+  width:100%;
+  min-height:280px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#f97316,#facc15);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+  font-size:36px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.quizChoices{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.choiceBtn{
+  border:0;
+  border-radius:18px;
+  padding:18px 10px;
+  background:#f3f4f6;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.choiceBtn:active{
+  transform:scale(0.96);
+}
+
+@media(max-width:430px){
+  .app{
+    padding:16px 4% 24px;
+  }
+
+  .titleBox h1{
+    font-size:24px;
+  }
+
+  .menuGrid{
+    gap:12px;
+  }
+
+  .gameCard{
+    min-height:125px;
+    border-radius:23px;
+  }
+
+  .gameIcon{
+    font-size:34px;
+  }
+
+  .gameCard h2{
+    font-size:15px;
+  }
+
+  .gamePanel{
+    padding:13px;
+    border-radius:25px;
+  }
+
+  .gameHeader h2{
+    font-size:19px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     ARCADE MAIN MENU
+========================= -->
+<div id="mainMenu" class="app">
+
+  <div class="topbar">
+    <button class="backBtn" onclick="goMainWebsite()">← Main</button>
+    <div class="titleBox">
+      <h1>🕹️ Arcade Games</h1>
+      <p>10 playable games in one page</p>
+    </div>
+    <button class="homeBtn" onclick="showMenu()">Home</button>
+  </div>
+
+  <div class="menuGrid">
+
+    <button class="gameCard" onclick="openGame('snakeGame'); startSnake();">
+      <div class="gameIcon">🐍</div>
+      <h2>Snake</h2>
+      <p>Eat food and grow longer.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('pongGame'); startPong();">
+      <div class="gameIcon">🏓</div>
+      <h2>Pong</h2>
+      <p>Move paddle and hit the ball.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('breakoutGame'); startBreakout();">
+      <div class="gameIcon">🧱</div>
+      <h2>Breakout</h2>
+      <p>Break blocks with the ball.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('flappyGame'); startFlappy();">
+      <div class="gameIcon">🐦</div>
+      <h2>Flying Bird</h2>
+      <p>Tap to fly through pipes.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('tapGame'); startTapGame();">
+      <div class="gameIcon">🎯</div>
+      <h2>Tap Target</h2>
+      <p>Tap as fast as you can.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('reactionGame'); startReaction();">
+      <div class="gameIcon">⚡</div>
+      <h2>Reaction</h2>
+      <p>Tap when screen turns green.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('dodgerGame'); startDodger();">
+      <div class="gameIcon">🚀</div>
+      <h2>Dodger</h2>
+      <p>Dodge falling blocks.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('whackGame'); startWhack();">
+      <div class="gameIcon">🔨</div>
+      <h2>Whack Dot</h2>
+      <p>Hit the dot before it moves.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('racingGame'); startRacing();">
+      <div class="gameIcon">🏎️</div>
+      <h2>Mini Racing</h2>
+      <p>Move car and avoid traffic.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('catchGame'); startCatch();">
+      <div class="gameIcon">🪣</div>
+      <h2>Catch Game</h2>
+      <p>Catch falling stars.</p>
+    </button>
+
+  </div>
+</div>
+
+<!-- =========================
+     SNAKE GAME
+========================= -->
+<div id="snakeGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🐍 Snake</h2>
+      <div class="scoreBox">Score: <span id="snakeScore">0</span></div>
+    </div>
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+      <div></div>
+      <button class="controlBtn" onclick="snakeTurn('up')">↑</button>
+      <div></div>
+      <button class="controlBtn" onclick="snakeTurn('left')">←</button>
+      <button class="controlBtn redBtn" onclick="startSnake()">Restart</button>
+      <button class="controlBtn" onclick="snakeTurn('right')">→</button>
+      <div></div>
+      <button class="controlBtn" onclick="snakeTurn('down')">↓</button>
+      <div></div>
+    </div>
+    <div class="message">Use buttons or keyboard arrows.</div>
+  </div>
+</div>
+
+<!-- =========================
+     PONG GAME
+========================= -->
+<div id="pongGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🏓 Pong</h2>
+      <div class="scoreBox">Score: <span id="pongScore">0</span></div>
+    </div>
+    <canvas id="pongCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+      <button class="controlBtn" onclick="pongMove(-50)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startPong()">Restart</button>
+      <button class="controlBtn" onclick="pongMove(50)">Right →</button>
+    </div>
+    <div class="message">Move paddle and keep the ball alive.</div>
+  </div>
+</div>
+
+<!-- =========================
+     BREAKOUT GAME
+========================= -->
+<div id="breakoutGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🧱 Breakout</h2>
+      <div class="scoreBox">Blocks: <span id="breakScore">0</span></div>
+    </div>
+    <canvas id="breakCanvas" width="400" height="420"></canvas>
+    <div class="controls">
+      <button class="controlBtn" onclick="breakMove(-55)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startBreakout()">Restart</button>
+      <button class="controlBtn" onclick="breakMove(55)">Right →</button>
+    </div>
+    <div class="message">Break all blocks with the ball.</div>
+  </div>
+</div>
+
+<!-- =========================
+     FLAPPY GAME
+========================= -->
+<div id="flappyGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🐦 Flying Bird</h2>
+      <div class="scoreBox">Score: <span id="flappyScore">0</span></div>
+    </div>
+    <canvas id="flappyCanvas" width="400" height="500"></canvas>
+    <button class="actionBtn" onclick="flappyJump()">Tap / Fly</button>
+    <button class="actionBtn redBtn" onclick="startFlappy()">Restart</button>
+    <div class="message">Tap the button or canvas to fly.</div>
+  </div>
+</div>
+
+<!-- =========================
+     TAP TARGET GAME
+========================= -->
+<div id="tapGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🎯 Tap Target</h2>
+      <div class="scoreBox">Score: <span id="tapScore">0</span></div>
+    </div>
+    <canvas id="tapCanvas" width="400" height="400"></canvas>
+    <button class="actionBtn redBtn" onclick="startTapGame()">Restart</button>
+    <div class="message">Tap the orange circle before time ends.</div>
+  </div>
+</div>
+
+<!-- =========================
+     REACTION GAME
+========================= -->
+<div id="reactionGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>⚡ Reaction</h2>
+      <div class="scoreBox"><span id="reactionBest">Best: --</span></div>
+    </div>
+    <div id="reactionBox" class="bigTapArea" onclick="reactionTap()">Wait...</div>
+    <button class="actionBtn redBtn" onclick="startReaction()">Restart</button>
+    <div class="message" id="reactionMsg">Tap only when it turns green.</div>
+  </div>
+</div>
+
+<!-- =========================
+     DODGER GAME
+========================= -->
+<div id="dodgerGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🚀 Dodger</h2>
+      <div class="scoreBox">Score: <span id="dodgerScore">0</span></div>
+    </div>
+    <canvas id="dodgerCanvas" width="400" height="500"></canvas>
+    <div class="controls">
+      <button class="controlBtn" onclick="dodgerMove(-45)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startDodger()">Restart</button>
+      <button class="controlBtn" onclick="dodgerMove(45)">Right →</button>
+    </div>
+    <div class="message">Avoid the falling red blocks.</div>
+  </div>
+</div>
+
+<!-- =========================
+     WHACK DOT GAME
+========================= -->
+<div id="whackGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔨 Whack Dot</h2>
+      <div class="scoreBox">Score: <span id="whackScore">0</span></div>
+    </div>
+    <canvas id="whackCanvas" width="400" height="400"></canvas>
+    <button class="actionBtn redBtn" onclick="startWhack()">Restart</button>
+    <div class="message">Tap the blue dot before it changes place.</div>
+  </div>
+</div>
+
+<!-- =========================
+     MINI RACING GAME
+========================= -->
+<div id="racingGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🏎️ Racing</h2>
+      <div class="scoreBox">Score: <span id="raceScore">0</span></div>
+    </div>
+    <canvas id="raceCanvas" width="400" height="520"></canvas>
+    <div class="controls">
+      <button class="controlBtn" onclick="raceMove(-55)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startRacing()">Restart</button>
+      <button class="controlBtn" onclick="raceMove(55)">Right →</button>
+    </div>
+    <div class="message">Avoid cars and stay on the road.</div>
+  </div>
+</div>
+
+<!-- =========================
+     CATCH GAME
+========================= -->
+<div id="catchGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🪣 Catch Stars</h2>
+      <div class="scoreBox">Score: <span id="catchScore">0</span></div>
+    </div>
+    <canvas id="catchCanvas" width="400" height="500"></canvas>
+    <div class="controls">
+      <button class="controlBtn" onclick="catchMove(-55)">← Left</button>
+      <button class="controlBtn redBtn" onclick="startCatch()">Restart</button>
+      <button class="controlBtn" onclick="catchMove(55)">Right →</button>
+    </div>
+    <div class="message">Catch yellow stars. Missed stars end the game.</div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   GLOBAL PAGE LOGIC
+========================= */
+let activeIntervals = [];
+
+function stopAllGames(){
+  activeIntervals.forEach(id => clearInterval(id));
+  activeIntervals = [];
+}
+
+function saveInterval(id){
+  activeIntervals.push(id);
+}
+
+function openGame(id){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "none";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function showMenu(){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "block";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  window.scrollTo(0,0);
+}
+
+function goMainWebsite(){
+  window.location.href = "../";
+}
+
+function rand(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/* =========================
+   KEYBOARD CONTROLS
+========================= */
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowUp") snakeTurn("up");
+  if(e.key === "ArrowDown") snakeTurn("down");
+  if(e.key === "ArrowLeft"){
+    snakeTurn("left");
+    pongMove(-40);
+    breakMove(-45);
+    dodgerMove(-40);
+    raceMove(-45);
+    catchMove(-45);
+  }
+  if(e.key === "ArrowRight"){
+    snakeTurn("right");
+    pongMove(40);
+    breakMove(45);
+    dodgerMove(40);
+    raceMove(45);
+    catchMove(45);
+  }
+  if(e.code === "Space"){
+    flappyJump();
+  }
+});
+
+/* =========================
+   GAME 1: SNAKE
+========================= */
+let snakeCtx, snake, snakeFood, snakeDir, snakeNextDir, snakeScore, snakeSize;
+
+function startSnake(){
+  stopAllGames();
+  const canvas = document.getElementById("snakeCanvas");
+  snakeCtx = canvas.getContext("2d");
+  snakeSize = 20;
+  snake = [{x:200,y:200}];
+  snakeFood = {x:100,y:100};
+  snakeDir = {x:snakeSize,y:0};
+  snakeNextDir = {x:snakeSize,y:0};
+  snakeScore = 0;
+  document.getElementById("snakeScore").innerText = snakeScore;
+  drawSnake();
+  saveInterval(setInterval(updateSnake,120));
+}
+
+function snakeTurn(dir){
+  if(dir === "up" && snakeDir.y === 0) snakeNextDir = {x:0,y:-snakeSize};
+  if(dir === "down" && snakeDir.y === 0) snakeNextDir = {x:0,y:snakeSize};
+  if(dir === "left" && snakeDir.x === 0) snakeNextDir = {x:-snakeSize,y:0};
+  if(dir === "right" && snakeDir.x === 0) snakeNextDir = {x:snakeSize,y:0};
+}
+
+function updateSnake(){
+  snakeDir = snakeNextDir;
+  let head = {
+    x: snake[0].x + snakeDir.x,
+    y: snake[0].y + snakeDir.y
+  };
+
+  if(head.x < 0 || head.y < 0 || head.x >= 400 || head.y >= 400 || snake.some(p => p.x === head.x && p.y === head.y)){
+    startSnake();
+    return;
+  }
+
+  snake.unshift(head);
+
+  if(head.x === snakeFood.x && head.y === snakeFood.y){
+    snakeScore++;
+    document.getElementById("snakeScore").innerText = snakeScore;
+    snakeFood = {
+      x: rand(0,19) * snakeSize,
+      y: rand(0,19) * snakeSize
+    };
+  }else{
+    snake.pop();
+  }
+
+  drawSnake();
+}
+
+function drawSnake(){
+  snakeCtx.fillStyle = "#111827";
+  snakeCtx.fillRect(0,0,400,400);
+
+  snakeCtx.fillStyle = "#22c55e";
+  snake.forEach(p => {
+    snakeCtx.fillRect(p.x+2,p.y+2,snakeSize-4,snakeSize-4);
+  });
+
+  snakeCtx.fillStyle = "#ef4444";
+  snakeCtx.beginPath();
+  snakeCtx.arc(snakeFood.x+10,snakeFood.y+10,8,0,Math.PI*2);
+  snakeCtx.fill();
+}
+
+/* =========================
+   GAME 2: PONG
+========================= */
+let pongCtx, pongBall, pongPaddle, pongScore;
+
+function startPong(){
+  stopAllGames();
+  const canvas = document.getElementById("pongCanvas");
+  pongCtx = canvas.getContext("2d");
+  pongBall = {x:200,y:180,dx:4,dy:4,r:9};
+  pongPaddle = {x:150,y:365,w:100,h:14};
+  pongScore = 0;
+  document.getElementById("pongScore").innerText = pongScore;
+  saveInterval(setInterval(updatePong,18));
+}
+
+function pongMove(amount){
+  if(!pongPaddle) return;
+  pongPaddle.x += amount;
+  if(pongPaddle.x < 0) pongPaddle.x = 0;
+  if(pongPaddle.x + pongPaddle.w > 400) pongPaddle.x = 400 - pongPaddle.w;
+}
+
+function updatePong(){
+  pongBall.x += pongBall.dx;
+  pongBall.y += pongBall.dy;
+
+  if(pongBall.x < pongBall.r || pongBall.x > 400 - pongBall.r) pongBall.dx *= -1;
+  if(pongBall.y < pongBall.r) pongBall.dy *= -1;
+
+  if(
+    pongBall.y + pongBall.r >= pongPaddle.y &&
+    pongBall.x >= pongPaddle.x &&
+    pongBall.x <= pongPaddle.x + pongPaddle.w
+  ){
+    pongBall.dy *= -1;
+    pongScore++;
+    document.getElementById("pongScore").innerText = pongScore;
+  }
+
+  if(pongBall.y > 420){
+    startPong();
+    return;
+  }
+
+  pongCtx.fillStyle = "#111827";
+  pongCtx.fillRect(0,0,400,400);
+
+  pongCtx.fillStyle = "#38bdf8";
+  pongCtx.fillRect(pongPaddle.x,pongPaddle.y,pongPaddle.w,pongPaddle.h);
+
+  pongCtx.fillStyle = "#facc15";
+  pongCtx.beginPath();
+  pongCtx.arc(pongBall.x,pongBall.y,pongBall.r,0,Math.PI*2);
+  pongCtx.fill();
+}
+
+/* =========================
+   GAME 3: BREAKOUT
+========================= */
+let breakCtx, breakBall, breakPaddle, bricks, breakScore;
+
+function startBreakout(){
+  stopAllGames();
+  const canvas = document.getElementById("breakCanvas");
+  breakCtx = canvas.getContext("2d");
+  breakBall = {x:200,y:300,dx:4,dy:-4,r:8};
+  breakPaddle = {x:145,y:390,w:110,h:14};
+  bricks = [];
+  breakScore = 0;
+
+  for(let r=0;r<4;r++){
+    for(let c=0;c<6;c++){
+      bricks.push({x:20+c*61,y:35+r*28,w:52,h:18,alive:true});
+    }
+  }
+
+  document.getElementById("breakScore").innerText = bricks.length;
+  saveInterval(setInterval(updateBreakout,18));
+}
+
+function breakMove(amount){
+  if(!breakPaddle) return;
+  breakPaddle.x += amount;
+  if(breakPaddle.x < 0) breakPaddle.x = 0;
+  if(breakPaddle.x + breakPaddle.w > 400) breakPaddle.x = 400 - breakPaddle.w;
+}
+
+function updateBreakout(){
+  breakBall.x += breakBall.dx;
+  breakBall.y += breakBall.dy;
+
+  if(breakBall.x < breakBall.r || breakBall.x > 400 - breakBall.r) breakBall.dx *= -1;
+  if(breakBall.y < breakBall.r) breakBall.dy *= -1;
+
+  if(
+    breakBall.y + breakBall.r >= breakPaddle.y &&
+    breakBall.x >= breakPaddle.x &&
+    breakBall.x <= breakPaddle.x + breakPaddle.w
+  ){
+    breakBall.dy *= -1;
+  }
+
+  bricks.forEach(b => {
+    if(b.alive && breakBall.x > b.x && breakBall.x < b.x+b.w && breakBall.y > b.y && breakBall.y < b.y+b.h){
+      b.alive = false;
+      breakBall.dy *= -1;
+      breakScore++;
+      document.getElementById("breakScore").innerText = bricks.filter(x => x.alive).length;
+    }
+  });
+
+  if(bricks.every(b => !b.alive)){
+    startBreakout();
+    return;
+  }
+
+  if(breakBall.y > 430){
+    startBreakout();
+    return;
+  }
+
+  drawBreakout();
+}
+
+function drawBreakout(){
+  breakCtx.fillStyle = "#111827";
+  breakCtx.fillRect(0,0,400,420);
+
+  bricks.forEach(b => {
+    if(b.alive){
+      breakCtx.fillStyle = "#fb923c";
+      breakCtx.fillRect(b.x,b.y,b.w,b.h);
+    }
+  });
+
+  breakCtx.fillStyle = "#38bdf8";
+  breakCtx.fillRect(breakPaddle.x,breakPaddle.y,breakPaddle.w,breakPaddle.h);
+
+  breakCtx.fillStyle = "#facc15";
+  breakCtx.beginPath();
+  breakCtx.arc(breakBall.x,breakBall.y,breakBall.r,0,Math.PI*2);
+  breakCtx.fill();
+}
+
+/* =========================
+   GAME 4: FLAPPY BIRD
+========================= */
+let flappyCtx, bird, pipes, flappyScore, flappyAlive;
+
+function startFlappy(){
+  stopAllGames();
+  const canvas = document.getElementById("flappyCanvas");
+  flappyCtx = canvas.getContext("2d");
+  bird = {x:90,y:220,vy:0,r:14};
+  pipes = [{x:420,gapY:180,gap:135,passed:false}];
+  flappyScore = 0;
+  flappyAlive = true;
+  document.getElementById("flappyScore").innerText = flappyScore;
+  canvas.onclick = flappyJump;
+  saveInterval(setInterval(updateFlappy,22));
+}
+
+function flappyJump(){
+  if(!bird) return;
+  bird.vy = -7;
+}
+
+function updateFlappy(){
+  if(!flappyAlive) return;
+
+  bird.vy += 0.45;
+  bird.y += bird.vy;
+
+  pipes.forEach(p => {
+    p.x -= 3;
+
+    if(!p.passed && p.x + 50 < bird.x){
+      p.passed = true;
+      flappyScore++;
+      document.getElementById("flappyScore").innerText = flappyScore;
+    }
+  });
+
+  if(pipes[pipes.length-1].x < 200){
+    pipes.push({x:430,gapY:rand(110,320),gap:135,passed:false});
+  }
+
+  pipes = pipes.filter(p => p.x > -60);
+
+  pipes.forEach(p => {
+    let hitX = bird.x + bird.r > p.x && bird.x - bird.r < p.x + 55;
+    let hitY = bird.y - bird.r < p.gapY || bird.y + bird.r > p.gapY + p.gap;
+    if(hitX && hitY) startFlappy();
+  });
+
+  if(bird.y < 0 || bird.y > 500) startFlappy();
+
+  flappyCtx.fillStyle = "#0f172a";
+  flappyCtx.fillRect(0,0,400,500);
+
+  pipes.forEach(p => {
+    flappyCtx.fillStyle = "#22c55e";
+    flappyCtx.fillRect(p.x,0,55,p.gapY);
+    flappyCtx.fillRect(p.x,p.gapY+p.gap,55,500);
+  });
+
+  flappyCtx.fillStyle = "#facc15";
+  flappyCtx.beginPath();
+  flappyCtx.arc(bird.x,bird.y,bird.r,0,Math.PI*2);
+  flappyCtx.fill();
+}
+
+/* =========================
+   GAME 5: TAP TARGET
+========================= */
+let tapCtx, tapTarget, tapScore, tapTime;
+
+function startTapGame(){
+  stopAllGames();
+  const canvas = document.getElementById("tapCanvas");
+  tapCtx = canvas.getContext("2d");
+  tapScore = 0;
+  tapTime = 20;
+  document.getElementById("tapScore").innerText = tapScore;
+  moveTapTarget();
+  drawTapGame();
+  canvas.onclick = function(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (400 / rect.width);
+    const y = (e.clientY - rect.top) * (400 / rect.height);
+    const d = Math.hypot(x - tapTarget.x, y - tapTarget.y);
+    if(d <= tapTarget.r){
+      tapScore++;
+      document.getElementById("tapScore").innerText = tapScore;
+      moveTapTarget();
+      drawTapGame();
+    }
+  };
+  saveInterval(setInterval(function(){
+    tapTime--;
+    drawTapGame();
+    if(tapTime <= 0) startTapGame();
+  },1000));
+}
+
+function moveTapTarget(){
+  tapTarget = {x:rand(45,355),y:rand(45,355),r:30};
+}
+
+function drawTapGame(){
+  tapCtx.fillStyle = "#111827";
+  tapCtx.fillRect(0,0,400,400);
+
+  tapCtx.fillStyle = "white";
+  tapCtx.font = "18px Arial";
+  tapCtx.fillText("Time: " + tapTime, 18, 30);
+
+  tapCtx.fillStyle = "#f97316";
+  tapCtx.beginPath();
+  tapCtx.arc(tapTarget.x,tapTarget.y,tapTarget.r,0,Math.PI*2);
+  tapCtx.fill();
+
+  tapCtx.fillStyle = "white";
+  tapCtx.font = "bold 20px Arial";
+  tapCtx.textAlign = "center";
+  tapCtx.fillText("TAP", tapTarget.x, tapTarget.y+7);
+  tapCtx.textAlign = "left";
+}
+
+/* =========================
+   GAME 6: REACTION
+========================= */
+let reactionReady = false;
+let reactionStartTime = 0;
+let reactionTimeout = null;
+
+function startReaction(){
+  stopAllGames();
+  clearTimeout(reactionTimeout);
+  reactionReady = false;
+  const box = document.getElementById("reactionBox");
+  const msg = document.getElementById("reactionMsg");
+  box.style.background = "linear-gradient(135deg,#f97316,#facc15)";
+  box.innerText = "Wait...";
+  msg.innerText = "Do not tap yet. Wait for green.";
+
+  reactionTimeout = setTimeout(function(){
+    reactionReady = true;
+    reactionStartTime = Date.now();
+    box.style.background = "linear-gradient(135deg,#16a34a,#22c55e)";
+    box.innerText = "TAP NOW!";
+    msg.innerText = "Tap fast!";
+  }, rand(1800,4200));
+}
+
+function reactionTap(){
+  const box = document.getElementById("reactionBox");
+  const msg = document.getElementById("reactionMsg");
+
+  if(!reactionReady){
+    clearTimeout(reactionTimeout);
+    box.style.background = "linear-gradient(135deg,#ef4444,#f97316)";
+    box.innerText = "Too Early!";
+    msg.innerText = "You tapped too early. Press Restart.";
+    return;
+  }
+
+  const time = Date.now() - reactionStartTime;
+  reactionReady = false;
+  box.innerText = time + " ms";
+  msg.innerText = "Good reaction time!";
+  document.getElementById("reactionBest").innerText = "Last: " + time + " ms";
+}
+
+/* =========================
+   GAME 7: DODGER
+========================= */
+let dodgerCtx, dodgerPlayer, dodgerBlocks, dodgerScore;
+
+function startDodger(){
+  stopAllGames();
+  const canvas = document.getElementById("dodgerCanvas");
+  dodgerCtx = canvas.getContext("2d");
+  dodgerPlayer = {x:180,y:450,w:42,h:28};
+  dodgerBlocks = [];
+  dodgerScore = 0;
+  document.getElementById("dodgerScore").innerText = dodgerScore;
+  saveInterval(setInterval(updateDodger,25));
+}
+
+function dodgerMove(amount){
+  if(!dodgerPlayer) return;
+  dodgerPlayer.x += amount;
+  if(dodgerPlayer.x < 0) dodgerPlayer.x = 0;
+  if(dodgerPlayer.x + dodgerPlayer.w > 400) dodgerPlayer.x = 400 - dodgerPlayer.w;
+}
+
+function updateDodger(){
+  if(Math.random() < 0.06){
+    dodgerBlocks.push({x:rand(0,360),y:-30,w:rand(25,55),h:25,spd:rand(4,8)});
+  }
+
+  dodgerBlocks.forEach(b => b.y += b.spd);
+  dodgerBlocks = dodgerBlocks.filter(b => b.y < 540);
+
+  dodgerBlocks.forEach(b => {
+    if(
+      dodgerPlayer.x < b.x+b.w &&
+      dodgerPlayer.x+dodgerPlayer.w > b.x &&
+      dodgerPlayer.y < b.y+b.h &&
+      dodgerPlayer.y+dodgerPlayer.h > b.y
+    ){
+      startDodger();
+    }
+  });
+
+  dodgerScore++;
+  document.getElementById("dodgerScore").innerText = Math.floor(dodgerScore/10);
+
+  dodgerCtx.fillStyle = "#111827";
+  dodgerCtx.fillRect(0,0,400,500);
+
+  dodgerCtx.fillStyle = "#38bdf8";
+  dodgerCtx.fillRect(dodgerPlayer.x,dodgerPlayer.y,dodgerPlayer.w,dodgerPlayer.h);
+
+  dodgerCtx.fillStyle = "#ef4444";
+  dodgerBlocks.forEach(b => dodgerCtx.fillRect(b.x,b.y,b.w,b.h));
+}
+
+/* =========================
+   GAME 8: WHACK DOT
+========================= */
+let whackCtx, whackDot, whackScore;
+
+function startWhack(){
+  stopAllGames();
+  const canvas = document.getElementById("whackCanvas");
+  whackCtx = canvas.getContext("2d");
+  whackScore = 0;
+  document.getElementById("whackScore").innerText = whackScore;
+  moveWhackDot();
+  drawWhack();
+  canvas.onclick = function(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (400 / rect.width);
+    const y = (e.clientY - rect.top) * (400 / rect.height);
+    if(Math.hypot(x-whackDot.x,y-whackDot.y) <= whackDot.r){
+      whackScore++;
+      document.getElementById("whackScore").innerText = whackScore;
+      moveWhackDot();
+      drawWhack();
+    }
+  };
+  saveInterval(setInterval(function(){
+    moveWhackDot();
+    drawWhack();
+  },1300));
+}
+
+function moveWhackDot(){
+  whackDot = {x:rand(45,355),y:rand(45,355),r:28};
+}
+
+function drawWhack(){
+  whackCtx.fillStyle = "#111827";
+  whackCtx.fillRect(0,0,400,400);
+  whackCtx.fillStyle = "#38bdf8";
+  whackCtx.beginPath();
+  whackCtx.arc(whackDot.x,whackDot.y,whackDot.r,0,Math.PI*2);
+  whackCtx.fill();
+  whackCtx.fillStyle = "white";
+  whackCtx.font = "bold 22px Arial";
+  whackCtx.textAlign = "center";
+  whackCtx.fillText("HIT", whackDot.x, whackDot.y+7);
+  whackCtx.textAlign = "left";
+}
+
+/* =========================
+   GAME 9: MINI RACING
+========================= */
+let raceCtx, raceCar, raceEnemies, raceScore;
+
+function startRacing(){
+  stopAllGames();
+  const canvas = document.getElementById("raceCanvas");
+  raceCtx = canvas.getContext("2d");
+  raceCar = {x:175,y:445,w:50,h:70};
+  raceEnemies = [];
+  raceScore = 0;
+  document.getElementById("raceScore").innerText = raceScore;
+  saveInterval(setInterval(updateRacing,25));
+}
+
+function raceMove(amount){
+  if(!raceCar) return;
+  raceCar.x += amount;
+  if(raceCar.x < 80) raceCar.x = 80;
+  if(raceCar.x + raceCar.w > 320) raceCar.x = 320 - raceCar.w;
+}
+
+function updateRacing(){
+  if(Math.random() < 0.045){
+    raceEnemies.push({x:[95,175,255][rand(0,2)],y:-80,w:50,h:70,spd:rand(5,8)});
+  }
+
+  raceEnemies.forEach(c => c.y += c.spd);
+  raceEnemies = raceEnemies.filter(c => c.y < 600);
+
+  raceEnemies.forEach(c => {
+    if(
+      raceCar.x < c.x+c.w &&
+      raceCar.x+raceCar.w > c.x &&
+      raceCar.y < c.y+c.h &&
+      raceCar.y+raceCar.h > c.y
+    ){
+      startRacing();
+    }
+  });
+
+  raceScore++;
+  document.getElementById("raceScore").innerText = Math.floor(raceScore/10);
+
+  raceCtx.fillStyle = "#052e16";
+  raceCtx.fillRect(0,0,400,520);
+
+  raceCtx.fillStyle = "#374151";
+  raceCtx.fillRect(70,0,260,520);
+
+  raceCtx.strokeStyle = "#facc15";
+  raceCtx.setLineDash([25,25]);
+  raceCtx.lineWidth = 4;
+  raceCtx.beginPath();
+  raceCtx.moveTo(200,0);
+  raceCtx.lineTo(200,520);
+  raceCtx.stroke();
+  raceCtx.setLineDash([]);
+
+  raceCtx.fillStyle = "#3b82f6";
+  raceCtx.fillRect(raceCar.x,raceCar.y,raceCar.w,raceCar.h);
+
+  raceCtx.fillStyle = "#ef4444";
+  raceEnemies.forEach(c => raceCtx.fillRect(c.x,c.y,c.w,c.h));
+}
+
+/* =========================
+   GAME 10: CATCH STARS
+========================= */
+let catchCtx, catcher, stars, catchScore;
+
+function startCatch(){
+  stopAllGames();
+  const canvas = document.getElementById("catchCanvas");
+  catchCtx = canvas.getContext("2d");
+  catcher = {x:150,y:455,w:100,h:22};
+  stars = [];
+  catchScore = 0;
+  document.getElementById("catchScore").innerText = catchScore;
+  saveInterval(setInterval(updateCatch,25));
+}
+
+function catchMove(amount){
+  if(!catcher) return;
+  catcher.x += amount;
+  if(catcher.x < 0) catcher.x = 0;
+  if(catcher.x + catcher.w > 400) catcher.x = 400 - catcher.w;
+}
+
+function updateCatch(){
+  if(Math.random() < 0.045){
+    stars.push({x:rand(20,380),y:-20,r:12,spd:rand(4,7)});
+  }
+
+  stars.forEach(s => s.y += s.spd);
+
+  stars.forEach(s => {
+    if(
+      s.y+s.r >= catcher.y &&
+      s.x >= catcher.x &&
+      s.x <= catcher.x + catcher.w
+    ){
+      catchScore++;
+      document.getElementById("catchScore").innerText = catchScore;
+      s.caught = true;
+    }
+
+    if(s.y > 520){
+      startCatch();
+    }
+  });
+
+  stars = stars.filter(s => !s.caught && s.y < 520);
+
+  catchCtx.fillStyle = "#111827";
+  catchCtx.fillRect(0,0,400,500);
+
+  catchCtx.fillStyle = "#38bdf8";
+  catchCtx.fillRect(catcher.x,catcher.y,catcher.w,catcher.h);
+
+  catchCtx.fillStyle = "#facc15";
+  stars.forEach(s => {
+    catchCtx.beginPath();
+    catchCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    catchCtx.fill();
+  });
+}
+</script>
+
+</body>
+</html>
