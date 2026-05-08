@@ -1,1 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Brain Games</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#312e81,#7c3aed,#ec4899);
+  color:#111827;
+  overflow-x:hidden;
+}
+
+button{
+  font-family:inherit;
+}
+
+.app{
+  width:100%;
+  min-height:100vh;
+  padding:18px 5% 28px;
+}
+
+.topbar{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.backBtn,
+.homeBtn{
+  border:0;
+  background:rgba(255,255,255,0.22);
+  color:white;
+  border-radius:18px;
+  padding:12px 14px;
+  font-size:15px;
+  font-weight:700;
+  box-shadow:0 8px 20px rgba(0,0,0,0.18);
+}
+
+.titleBox{
+  flex:1;
+  text-align:center;
+  color:white;
+}
+
+.titleBox h1{
+  margin:0;
+  font-size:27px;
+}
+
+.titleBox p{
+  margin:4px 0 0;
+  font-size:12px;
+  opacity:0.9;
+}
+
+.menuGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.gameCard{
+  border:0;
+  background:white;
+  border-radius:25px;
+  padding:18px 10px;
+  min-height:132px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.18);
+  text-align:center;
+  cursor:pointer;
+}
+
+.gameCard:active,
+.backBtn:active,
+.homeBtn:active,
+.controlBtn:active,
+.actionBtn:active,
+.choiceBtn:active,
+.tile:active{
+  transform:scale(0.96);
+}
+
+.gameIcon{
+  font-size:38px;
+  margin-bottom:8px;
+}
+
+.gameCard h2{
+  margin:0;
+  font-size:17px;
+}
+
+.gameCard p{
+  margin:7px 0 0;
+  font-size:12px;
+  color:#6b7280;
+  line-height:1.35;
+}
+
+.gameScreen{
+  display:none;
+  width:100%;
+  min-height:100vh;
+  padding:16px 5% 24px;
+}
+
+.gamePanel{
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  background:white;
+  border-radius:28px;
+  padding:16px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.22);
+}
+
+.gameHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.gameHeader h2{
+  margin:0;
+  font-size:21px;
+  text-align:center;
+}
+
+.scoreBox{
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:9px 12px;
+  font-weight:800;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.actionBtn{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  background:#16a34a;
+  color:white;
+  padding:14px 10px;
+  margin-top:12px;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.redBtn{
+  background:#ef4444;
+}
+
+.blueBtn{
+  background:#2563eb;
+}
+
+.grayBtn{
+  background:#6b7280;
+}
+
+.message{
+  margin-top:10px;
+  background:#f3f4f6;
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  color:#374151;
+  line-height:1.4;
+}
+
+.board3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.board4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.tile{
+  border:0;
+  border-radius:18px;
+  min-height:78px;
+  background:#f3f4f6;
+  font-size:30px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.tile.dark{
+  background:#111827;
+  color:white;
+}
+
+.tile.good{
+  background:#22c55e;
+  color:white;
+}
+
+.tile.bad{
+  background:#ef4444;
+  color:white;
+}
+
+.inputBox{
+  width:100%;
+  border:2px solid #e5e7eb;
+  border-radius:18px;
+  padding:15px;
+  font-size:22px;
+  font-weight:800;
+  text-align:center;
+  outline:none;
+  margin-top:12px;
+  user-select:text;
+}
+
+.choiceGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.choiceBtn{
+  border:0;
+  border-radius:18px;
+  padding:18px 10px;
+  background:#f3f4f6;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.bigQuestion{
+  width:100%;
+  min-height:130px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#4f46e5,#ec4899);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px;
+  font-size:34px;
+  font-weight:900;
+  line-height:1.25;
+}
+
+.colorGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.colorTile{
+  border:0;
+  border-radius:24px;
+  min-height:105px;
+  cursor:pointer;
+  font-size:22px;
+  font-weight:900;
+  color:white;
+}
+
+.smallText{
+  font-size:13px;
+  color:#6b7280;
+  text-align:center;
+  margin-top:8px;
+}
+
+@media(max-width:430px){
+  .app{
+    padding:16px 4% 24px;
+  }
+
+  .titleBox h1{
+    font-size:24px;
+  }
+
+  .menuGrid{
+    gap:12px;
+  }
+
+  .gameCard{
+    min-height:125px;
+    border-radius:23px;
+  }
+
+  .gameIcon{
+    font-size:34px;
+  }
+
+  .gameCard h2{
+    font-size:15px;
+  }
+
+  .gamePanel{
+    padding:13px;
+    border-radius:25px;
+  }
+
+  .gameHeader h2{
+    font-size:18px;
+  }
+
+  .tile{
+    min-height:68px;
+    font-size:25px;
+  }
+
+  .bigQuestion{
+    font-size:28px;
+  }
+
+  .colorTile{
+    min-height:90px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     BRAIN GAMES MAIN MENU
+========================= -->
+<div id="mainMenu" class="app">
+
+  <div class="topbar">
+    <button class="backBtn" onclick="goMainWebsite()">← Main</button>
+    <div class="titleBox">
+      <h1>🧠 Brain Games</h1>
+      <p>10 playable puzzle and thinking games</p>
+    </div>
+    <button class="homeBtn" onclick="showMenu()">Home</button>
+  </div>
+
+  <div class="menuGrid">
+
+    <button class="gameCard" onclick="openGame('ticGame'); startTicTacToe();">
+      <div class="gameIcon">❌</div>
+      <h2>Tic Tac Toe</h2>
+      <p>Play X and O against the computer.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('memoryGame'); startMemoryMatch();">
+      <div class="gameIcon">🃏</div>
+      <h2>Memory Match</h2>
+      <p>Find matching pairs.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('numberPuzzleGame'); startNumberPuzzle();">
+      <div class="gameIcon">🔢</div>
+      <h2>Number Puzzle</h2>
+      <p>Arrange numbers in order.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('simonGame'); startSimon();">
+      <div class="gameIcon">🎵</div>
+      <h2>Simon Says</h2>
+      <p>Remember the color pattern.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('mathGame'); startMathQuiz();">
+      <div class="gameIcon">➕</div>
+      <h2>Math Quiz</h2>
+      <p>Solve quick math questions.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('wordGame'); startWordScramble();">
+      <div class="gameIcon">🔤</div>
+      <h2>Word Scramble</h2>
+      <p>Unscramble the word.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('patternGame'); startPatternMemory();">
+      <div class="gameIcon">🔲</div>
+      <h2>Pattern Memory</h2>
+      <p>Remember square positions.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('colorMemoryGame'); startColorMemory();">
+      <div class="gameIcon">🌈</div>
+      <h2>Color Memory</h2>
+      <p>Repeat the color order.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('differentGame'); startDifferentOne();">
+      <div class="gameIcon">👀</div>
+      <h2>Find Different</h2>
+      <p>Find the different icon.</p>
+    </button>
+
+    <button class="gameCard" onclick="openGame('sequenceGame'); startSequenceGame();">
+      <div class="gameIcon">📈</div>
+      <h2>Sequence</h2>
+      <p>Guess the next number.</p>
+    </button>
+
+  </div>
+</div>
+
+<!-- =========================
+     GAME 1: TIC TAC TOE
+========================= -->
+<div id="ticGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>❌ Tic Tac Toe</h2>
+      <div class="scoreBox" id="ticStatus">Your turn</div>
+    </div>
+
+    <div id="ticBoard" class="board3"></div>
+
+    <button class="actionBtn redBtn" onclick="startTicTacToe()">Restart</button>
+    <div class="message">You are X. Computer is O.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 2: MEMORY MATCH
+========================= -->
+<div id="memoryGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🃏 Memory Match</h2>
+      <div class="scoreBox">Moves: <span id="memoryMoves">0</span></div>
+    </div>
+
+    <div id="memoryBoard" class="board4"></div>
+
+    <button class="actionBtn redBtn" onclick="startMemoryMatch()">Restart</button>
+    <div class="message" id="memoryMsg">Tap cards and find all pairs.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 3: NUMBER PUZZLE
+========================= -->
+<div id="numberPuzzleGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔢 Number Puzzle</h2>
+      <div class="scoreBox">Moves: <span id="puzzleMoves">0</span></div>
+    </div>
+
+    <div id="puzzleBoard" class="board4"></div>
+
+    <button class="actionBtn redBtn" onclick="startNumberPuzzle()">Shuffle</button>
+    <div class="message" id="puzzleMsg">Move numbers into order from 1 to 15.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 4: SIMON SAYS
+========================= -->
+<div id="simonGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🎵 Simon Says</h2>
+      <div class="scoreBox">Level: <span id="simonLevel">0</span></div>
+    </div>
+
+    <div class="colorGrid">
+      <button class="colorTile" id="simon0" style="background:#ef4444;" onclick="simonPress(0)">Red</button>
+      <button class="colorTile" id="simon1" style="background:#22c55e;" onclick="simonPress(1)">Green</button>
+      <button class="colorTile" id="simon2" style="background:#3b82f6;" onclick="simonPress(2)">Blue</button>
+      <button class="colorTile" id="simon3" style="background:#f59e0b;" onclick="simonPress(3)">Yellow</button>
+    </div>
+
+    <button class="actionBtn blueBtn" onclick="simonNextRound()">Start / Next</button>
+    <button class="actionBtn redBtn" onclick="startSimon()">Restart</button>
+    <div class="message" id="simonMsg">Press Start. Watch the pattern, then repeat it.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 5: MATH QUIZ
+========================= -->
+<div id="mathGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>➕ Math Quiz</h2>
+      <div class="scoreBox">Score: <span id="mathScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="mathQuestion">2 + 2 = ?</div>
+    <div id="mathChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startMathQuiz()">Restart</button>
+    <div class="message" id="mathMsg">Choose the correct answer.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 6: WORD SCRAMBLE
+========================= -->
+<div id="wordGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔤 Word Scramble</h2>
+      <div class="scoreBox">Score: <span id="wordScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="scrambledWord">GAME</div>
+    <input id="wordInput" class="inputBox" placeholder="Type answer">
+    <button class="actionBtn blueBtn" onclick="checkWordScramble()">Check Answer</button>
+    <button class="actionBtn redBtn" onclick="startWordScramble()">New Word</button>
+    <div class="message" id="wordMsg">Unscramble the word.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 7: PATTERN MEMORY
+========================= -->
+<div id="patternGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🔲 Pattern Memory</h2>
+      <div class="scoreBox">Level: <span id="patternLevel">1</span></div>
+    </div>
+
+    <div id="patternBoard" class="board4"></div>
+
+    <button class="actionBtn blueBtn" onclick="showPattern()">Show Pattern</button>
+    <button class="actionBtn redBtn" onclick="startPatternMemory()">Restart</button>
+    <div class="message" id="patternMsg">Press Show Pattern, remember the green boxes, then tap them.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 8: COLOR MEMORY
+========================= -->
+<div id="colorMemoryGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>🌈 Color Memory</h2>
+      <div class="scoreBox">Round: <span id="colorRound">1</span></div>
+    </div>
+
+    <div class="bigQuestion" id="colorShowBox">Press Start</div>
+
+    <div class="colorGrid" style="margin-top:12px;">
+      <button class="colorTile" style="background:#ef4444;" onclick="colorMemoryPress('Red')">Red</button>
+      <button class="colorTile" style="background:#22c55e;" onclick="colorMemoryPress('Green')">Green</button>
+      <button class="colorTile" style="background:#3b82f6;" onclick="colorMemoryPress('Blue')">Blue</button>
+      <button class="colorTile" style="background:#f59e0b;" onclick="colorMemoryPress('Yellow')">Yellow</button>
+    </div>
+
+    <button class="actionBtn blueBtn" onclick="startColorRound()">Start Round</button>
+    <button class="actionBtn redBtn" onclick="startColorMemory()">Restart</button>
+    <div class="message" id="colorMsg">Watch the color name, then tap the same color.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 9: FIND DIFFERENT ONE
+========================= -->
+<div id="differentGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>👀 Find Different</h2>
+      <div class="scoreBox">Score: <span id="differentScore">0</span></div>
+    </div>
+
+    <div id="differentBoard" class="board4"></div>
+
+    <button class="actionBtn redBtn" onclick="startDifferentOne()">Restart</button>
+    <div class="message" id="differentMsg">Find the one icon that is different.</div>
+  </div>
+</div>
+
+<!-- =========================
+     GAME 10: SEQUENCE GAME
+========================= -->
+<div id="sequenceGame" class="gameScreen">
+  <div class="gamePanel">
+    <div class="gameHeader">
+      <button class="backBtn grayBtn" onclick="showMenu()">← Back</button>
+      <h2>📈 Sequence</h2>
+      <div class="scoreBox">Score: <span id="sequenceScore">0</span></div>
+    </div>
+
+    <div class="bigQuestion" id="sequenceQuestion">2, 4, 6, ?</div>
+    <div id="sequenceChoices" class="choiceGrid"></div>
+
+    <button class="actionBtn redBtn" onclick="startSequenceGame()">Restart</button>
+    <div class="message" id="sequenceMsg">Pick the next number.</div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   GLOBAL PAGE LOGIC
+========================= */
+let activeTimers = [];
+
+function saveTimer(id){
+  activeTimers.push(id);
+}
+
+function stopAllGames(){
+  activeTimers.forEach(id => clearTimeout(id));
+  activeTimers.forEach(id => clearInterval(id));
+  activeTimers = [];
+}
+
+function openGame(id){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "none";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+  window.scrollTo(0,0);
+}
+
+function showMenu(){
+  stopAllGames();
+  document.getElementById("mainMenu").style.display = "block";
+  document.querySelectorAll(".gameScreen").forEach(page => {
+    page.style.display = "none";
+  });
+  window.scrollTo(0,0);
+}
+
+function goMainWebsite(){
+  window.location.href = "../";
+}
+
+function rand(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+/* =========================
+   GAME 1: TIC TAC TOE
+========================= */
+let ticBoard = [];
+let ticGameOver = false;
+
+function startTicTacToe(){
+  stopAllGames();
+  ticBoard = ["","","","","","","","",""];
+  ticGameOver = false;
+  document.getElementById("ticStatus").innerText = "Your turn";
+  renderTicBoard();
+}
+
+function renderTicBoard(){
+  const board = document.getElementById("ticBoard");
+  board.innerHTML = "";
+
+  ticBoard.forEach((value,index) => {
+    const btn = document.createElement("button");
+    btn.className = "tile";
+    btn.innerText = value;
+    btn.onclick = function(){
+      ticPlayerMove(index);
+    };
+    board.appendChild(btn);
+  });
+}
+
+function ticPlayerMove(index){
+  if(ticGameOver || ticBoard[index] !== "") return;
+
+  ticBoard[index] = "X";
+  renderTicBoard();
+
+  if(checkTicWinner("X")){
+    ticGameOver = true;
+    document.getElementById("ticStatus").innerText = "You win!";
+    return;
+  }
+
+  if(ticBoard.every(x => x !== "")){
+    ticGameOver = true;
+    document.getElementById("ticStatus").innerText = "Draw";
+    return;
+  }
+
+  document.getElementById("ticStatus").innerText = "Computer...";
+  setTimeout(ticComputerMove,400);
+}
+
+function ticComputerMove(){
+  if(ticGameOver) return;
+
+  let empty = ticBoard.map((v,i) => v === "" ? i : null).filter(v => v !== null);
+
+  let move = findWinningMove("O");
+  if(move === null) move = findWinningMove("X");
+  if(move === null && ticBoard[4] === "") move = 4;
+  if(move === null) move = empty[Math.floor(Math.random() * empty.length)];
+
+  ticBoard[move] = "O";
+  renderTicBoard();
+
+  if(checkTicWinner("O")){
+    ticGameOver = true;
+    document.getElementById("ticStatus").innerText = "Computer wins";
+    return;
+  }
+
+  if(ticBoard.every(x => x !== "")){
+    ticGameOver = true;
+    document.getElementById("ticStatus").innerText = "Draw";
+    return;
+  }
+
+  document.getElementById("ticStatus").innerText = "Your turn";
+}
+
+function findWinningMove(symbol){
+  const wins = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  for(let combo of wins){
+    let values = combo.map(i => ticBoard[i]);
+    if(values.filter(v => v === symbol).length === 2 && values.includes("")){
+      return combo[values.indexOf("")];
+    }
+  }
+
+  return null;
+}
+
+function checkTicWinner(symbol){
+  const wins = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  return wins.some(combo => combo.every(i => ticBoard[i] === symbol));
+}
+
+/* =========================
+   GAME 2: MEMORY MATCH
+========================= */
+let memoryCards = [];
+let memoryFirst = null;
+let memoryLock = false;
+let memoryMoves = 0;
+let memoryMatched = 0;
+
+function startMemoryMatch(){
+  stopAllGames();
+  const icons = ["🍎","🍌","🍇","🍓","🍉","🍒","🥝","🍍"];
+  memoryCards = shuffleArray([...icons,...icons]).map(icon => ({
+    icon:icon,
+    open:false,
+    matched:false
+  }));
+  memoryFirst = null;
+  memoryLock = false;
+  memoryMoves = 0;
+  memoryMatched = 0;
+  document.getElementById("memoryMoves").innerText = "0";
+  document.getElementById("memoryMsg").innerText = "Tap cards and find all pairs.";
+  renderMemoryBoard();
+}
+
+function renderMemoryBoard(){
+  const board = document.getElementById("memoryBoard");
+  board.innerHTML = "";
+
+  memoryCards.forEach((card,index) => {
+    const btn = document.createElement("button");
+    btn.className = "tile";
+    btn.innerText = card.open || card.matched ? card.icon : "❔";
+    if(card.matched) btn.classList.add("good");
+    btn.onclick = function(){
+      memoryClick(index);
+    };
+    board.appendChild(btn);
+  });
+}
+
+function memoryClick(index){
+  if(memoryLock) return;
+  const card = memoryCards[index];
+  if(card.open || card.matched) return;
+
+  card.open = true;
+
+  if(memoryFirst === null){
+    memoryFirst = index;
+    renderMemoryBoard();
+    return;
+  }
+
+  memoryMoves++;
+  document.getElementById("memoryMoves").innerText = memoryMoves;
+
+  if(memoryCards[memoryFirst].icon === card.icon){
+    memoryCards[memoryFirst].matched = true;
+    card.matched = true;
+    memoryMatched += 2;
+    memoryFirst = null;
+    renderMemoryBoard();
+
+    if(memoryMatched === memoryCards.length){
+      document.getElementById("memoryMsg").innerText = "You found all pairs!";
+    }
+  }else{
+    memoryLock = true;
+    renderMemoryBoard();
+
+    setTimeout(function(){
+      memoryCards[memoryFirst].open = false;
+      card.open = false;
+      memoryFirst = null;
+      memoryLock = false;
+      renderMemoryBoard();
+    },700);
+  }
+}
+
+/* =========================
+   GAME 3: NUMBER PUZZLE
+========================= */
+let puzzleNumbers = [];
+let puzzleMoves = 0;
+
+function startNumberPuzzle(){
+  stopAllGames();
+  puzzleNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,""];
+  do{
+    shuffleArray(puzzleNumbers);
+  }while(isPuzzleSolved());
+
+  puzzleMoves = 0;
+  document.getElementById("puzzleMoves").innerText = puzzleMoves;
+  document.getElementById("puzzleMsg").innerText = "Move numbers into order from 1 to 15.";
+  renderPuzzleBoard();
+}
+
+function renderPuzzleBoard(){
+  const board = document.getElementById("puzzleBoard");
+  board.innerHTML = "";
+
+  puzzleNumbers.forEach((num,index) => {
+    const btn = document.createElement("button");
+    btn.className = "tile";
+    btn.innerText = num;
+    if(num === ""){
+      btn.classList.add("dark");
+    }
+    btn.onclick = function(){
+      movePuzzleTile(index);
+    };
+    board.appendChild(btn);
+  });
+}
+
+function movePuzzleTile(index){
+  const emptyIndex = puzzleNumbers.indexOf("");
+  const row = Math.floor(index / 4);
+  const col = index % 4;
+  const emptyRow = Math.floor(emptyIndex / 4);
+  const emptyCol = emptyIndex % 4;
+
+  const canMove = Math.abs(row - emptyRow) + Math.abs(col - emptyCol) === 1;
+  if(!canMove) return;
+
+  [puzzleNumbers[index], puzzleNumbers[emptyIndex]] = [puzzleNumbers[emptyIndex], puzzleNumbers[index]];
+  puzzleMoves++;
+  document.getElementById("puzzleMoves").innerText = puzzleMoves;
+  renderPuzzleBoard();
+
+  if(isPuzzleSolved()){
+    document.getElementById("puzzleMsg").innerText = "Puzzle solved!";
+  }
+}
+
+function isPuzzleSolved(){
+  const solved = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,""];
+  return puzzleNumbers.every((v,i) => v === solved[i]);
+}
+
+/* =========================
+   GAME 4: SIMON SAYS
+========================= */
+let simonPattern = [];
+let simonUserIndex = 0;
+let simonShowing = false;
+
+function startSimon(){
+  stopAllGames();
+  simonPattern = [];
+  simonUserIndex = 0;
+  simonShowing = false;
+  document.getElementById("simonLevel").innerText = "0";
+  document.getElementById("simonMsg").innerText = "Press Start. Watch the pattern, then repeat it.";
+}
+
+function simonNextRound(){
+  if(simonShowing) return;
+  simonPattern.push(rand(0,3));
+  simonUserIndex = 0;
+  document.getElementById("simonLevel").innerText = simonPattern.length;
+  document.getElementById("simonMsg").innerText = "Watch...";
+  playSimonPattern();
+}
+
+function playSimonPattern(){
+  simonShowing = true;
+  let i = 0;
+
+  const interval = setInterval(function(){
+    if(i >= simonPattern.length){
+      clearInterval(interval);
+      simonShowing = false;
+      document.getElementById("simonMsg").innerText = "Now repeat the pattern.";
+      return;
+    }
+
+    flashSimonButton(simonPattern[i]);
+    i++;
+  },650);
+
+  saveTimer(interval);
+}
+
+function flashSimonButton(index){
+  const btn = document.getElementById("simon" + index);
+  const oldOpacity = btn.style.opacity;
+  btn.style.opacity = "0.35";
+
+  setTimeout(function(){
+    btn.style.opacity = oldOpacity || "1";
+  },300);
+}
+
+function simonPress(index){
+  if(simonShowing || simonPattern.length === 0) return;
+
+  flashSimonButton(index);
+
+  if(index !== simonPattern[simonUserIndex]){
+    document.getElementById("simonMsg").innerText = "Wrong pattern. Start again.";
+    simonPattern = [];
+    document.getElementById("simonLevel").innerText = "0";
+    return;
+  }
+
+  simonUserIndex++;
+
+  if(simonUserIndex === simonPattern.length){
+    document.getElementById("simonMsg").innerText = "Correct! Press Next.";
+  }
+}
+
+/* =========================
+   GAME 5: MATH QUIZ
+========================= */
+let mathAnswer = 0;
+let mathScore = 0;
+
+function startMathQuiz(){
+  stopAllGames();
+  mathScore = 0;
+  document.getElementById("mathScore").innerText = mathScore;
+  document.getElementById("mathMsg").innerText = "Choose the correct answer.";
+  newMathQuestion();
+}
+
+function newMathQuestion(){
+  const a = rand(2,20);
+  const b = rand(2,20);
+  const ops = ["+","-","×"];
+  const op = ops[rand(0,2)];
+
+  if(op === "+") mathAnswer = a + b;
+  if(op === "-") mathAnswer = a - b;
+  if(op === "×") mathAnswer = a * b;
+
+  document.getElementById("mathQuestion").innerText = a + " " + op + " " + b + " = ?";
+
+  let answers = [mathAnswer];
+  while(answers.length < 4){
+    let wrong = mathAnswer + rand(-12,12);
+    if(wrong !== mathAnswer && !answers.includes(wrong)){
+      answers.push(wrong);
+    }
+  }
+
+  shuffleArray(answers);
+
+  const choices = document.getElementById("mathChoices");
+  choices.innerHTML = "";
+
+  answers.forEach(ans => {
+    const btn = document.createElement("button");
+    btn.className = "choiceBtn";
+    btn.innerText = ans;
+    btn.onclick = function(){
+      checkMath(ans);
+    };
+    choices.appendChild(btn);
+  });
+}
+
+function checkMath(ans){
+  if(ans === mathAnswer){
+    mathScore++;
+    document.getElementById("mathScore").innerText = mathScore;
+    document.getElementById("mathMsg").innerText = "Correct!";
+    newMathQuestion();
+  }else{
+    document.getElementById("mathMsg").innerText = "Wrong. Try next one.";
+    newMathQuestion();
+  }
+}
+
+/* =========================
+   GAME 6: WORD SCRAMBLE
+========================= */
+let wordList = ["APPLE","BRAIN","GAMES","PUZZLE","SNAKE","LIGHT","WATER","HOUSE","PHONE","TIGER","MONEY","GREEN","TABLE","SMART","QUICK"];
+let currentWord = "";
+let wordScore = 0;
+
+function startWordScramble(){
+  stopAllGames();
+  if(!currentWord){
+    wordScore = 0;
+    document.getElementById("wordScore").innerText = wordScore;
+  }
+
+  currentWord = wordList[rand(0,wordList.length - 1)];
+  let scrambled = currentWord.split("");
+
+  do{
+    shuffleArray(scrambled);
+  }while(scrambled.join("") === currentWord);
+
+  document.getElementById("scrambledWord").innerText = scrambled.join(" ");
+  document.getElementById("wordInput").value = "";
+  document.getElementById("wordMsg").innerText = "Unscramble the word.";
+}
+
+function checkWordScramble(){
+  const answer = document.getElementById("wordInput").value.trim().toUpperCase();
+
+  if(answer === currentWord){
+    wordScore++;
+    document.getElementById("wordScore").innerText = wordScore;
+    document.getElementById("wordMsg").innerText = "Correct!";
+    currentWord = "";
+    setTimeout(startWordScramble,500);
+  }else{
+    document.getElementById("wordMsg").innerText = "Not correct. Try again.";
+  }
+}
+
+/* =========================
+   GAME 7: PATTERN MEMORY
+========================= */
+let patternCells = [];
+let patternAnswers = [];
+let patternUser = [];
+let patternLevel = 1;
+let patternCanTap = false;
+
+function startPatternMemory(){
+  stopAllGames();
+  patternLevel = 1;
+  document.getElementById("patternLevel").innerText = patternLevel;
+  document.getElementById("patternMsg").innerText = "Press Show Pattern, remember the green boxes, then tap them.";
+  makePatternBoard();
+}
+
+function makePatternBoard(){
+  patternCells = new Array(16).fill(false);
+  patternUser = [];
+  patternCanTap = false;
+
+  patternAnswers = [];
+  while(patternAnswers.length < patternLevel + 2){
+    let n = rand(0,15);
+    if(!patternAnswers.includes(n)){
+      patternAnswers.push(n);
+    }
+  }
+
+  renderPatternBoard(false);
+}
+
+function renderPatternBoard(showAnswer){
+  const board = document.getElementById("patternBoard");
+  board.innerHTML = "";
+
+  for(let i = 0; i < 16; i++){
+    const btn = document.createElement("button");
+    btn.className = "tile";
+
+    if(showAnswer && patternAnswers.includes(i)){
+      btn.classList.add("good");
+      btn.innerText = "✓";
+    }else if(patternUser.includes(i)){
+      btn.classList.add("dark");
+      btn.innerText = "•";
+    }else{
+      btn.innerText = "";
+    }
+
+    btn.onclick = function(){
+      patternTap(i);
+    };
+
+    board.appendChild(btn);
+  }
+}
+
+function showPattern(){
+  patternCanTap = false;
+  document.getElementById("patternMsg").innerText = "Remember these green boxes.";
+  renderPatternBoard(true);
+
+  setTimeout(function(){
+    patternCanTap = true;
+    patternUser = [];
+    document.getElementById("patternMsg").innerText = "Now tap the same boxes.";
+    renderPatternBoard(false);
+  },1400);
+}
+
+function patternTap(index){
+  if(!patternCanTap || patternUser.includes(index)) return;
+
+  if(!patternAnswers.includes(index)){
+    document.getElementById("patternMsg").innerText = "Wrong box. Restarting level.";
+    setTimeout(makePatternBoard,800);
+    return;
+  }
+
+  patternUser.push(index);
+  renderPatternBoard(false);
+
+  if(patternUser.length === patternAnswers.length){
+    patternLevel++;
+    document.getElementById("patternLevel").innerText = patternLevel;
+    document.getElementById("patternMsg").innerText = "Correct! Next level.";
+    setTimeout(makePatternBoard,800);
+  }
+}
+
+/* =========================
+   GAME 8: COLOR MEMORY
+========================= */
+let colorNames = ["Red","Green","Blue","Yellow"];
+let colorPattern = [];
+let colorUserIndex = 0;
+let colorRound = 1;
+let colorCanTap = false;
+
+function startColorMemory(){
+  stopAllGames();
+  colorRound = 1;
+  colorPattern = [];
+  colorUserIndex = 0;
+  colorCanTap = false;
+  document.getElementById("colorRound").innerText = colorRound;
+  document.getElementById("colorShowBox").innerText = "Press Start";
+  document.getElementById("colorMsg").innerText = "Watch the color name, then tap the same color.";
+}
+
+function startColorRound(){
+  colorPattern.push(colorNames[rand(0,3)]);
+  colorUserIndex = 0;
+  colorCanTap = false;
+  document.getElementById("colorRound").innerText = colorPattern.length;
+  document.getElementById("colorMsg").innerText = "Watch carefully.";
+
+  let i = 0;
+
+  function showNextColor(){
+    if(i >= colorPattern.length){
+      document.getElementById("colorShowBox").innerText = "Your Turn";
+      document.getElementById("colorMsg").innerText = "Tap the colors in the same order.";
+      colorCanTap = true;
+      return;
+    }
+
+    document.getElementById("colorShowBox").innerText = colorPattern[i];
+    i++;
+    setTimeout(function(){
+      document.getElementById("colorShowBox").innerText = "...";
+      setTimeout(showNextColor,350);
+    },650);
+  }
+
+  showNextColor();
+}
+
+function colorMemoryPress(color){
+  if(!colorCanTap) return;
+
+  if(color !== colorPattern[colorUserIndex]){
+    document.getElementById("colorMsg").innerText = "Wrong color. Restart.";
+    colorPattern = [];
+    colorCanTap = false;
+    document.getElementById("colorRound").innerText = "1";
+    return;
+  }
+
+  colorUserIndex++;
+
+  if(colorUserIndex === colorPattern.length){
+    colorCanTap = false;
+    document.getElementById("colorMsg").innerText = "Correct! Press Start Round.";
+  }
+}
+
+/* =========================
+   GAME 9: FIND DIFFERENT ONE
+========================= */
+let differentScore = 0;
+let differentAnswer = 0;
+
+function startDifferentOne(){
+  stopAllGames();
+  differentScore = 0;
+  document.getElementById("differentScore").innerText = differentScore;
+  document.getElementById("differentMsg").innerText = "Find the one icon that is different.";
+  newDifferentRound();
+}
+
+function newDifferentRound(){
+  const sets = [
+    ["😀","😃"],
+    ["🍎","🍅"],
+    ["🐶","🐺"],
+    ["⭐","🌟"],
+    ["🚗","🚙"],
+    ["🌙","⭐"],
+    ["💎","🔷"],
+    ["🟢","🔵"]
+  ];
+
+  const pair = sets[rand(0,sets.length - 1)];
+  const normal = pair[0];
+  const different = pair[1];
+  differentAnswer = rand(0,15);
+
+  const board = document.getElementById("differentBoard");
+  board.innerHTML = "";
+
+  for(let i = 0; i < 16; i++){
+    const btn = document.createElement("button");
+    btn.className = "tile";
+    btn.innerText = i === differentAnswer ? different : normal;
+    btn.onclick = function(){
+      checkDifferent(i);
+    };
+    board.appendChild(btn);
+  }
+}
+
+function checkDifferent(index){
+  if(index === differentAnswer){
+    differentScore++;
+    document.getElementById("differentScore").innerText = differentScore;
+    document.getElementById("differentMsg").innerText = "Correct!";
+    newDifferentRound();
+  }else{
+    document.getElementById("differentMsg").innerText = "Wrong one. Try again.";
+  }
+}
+
+/* =========================
+   GAME 10: SEQUENCE GAME
+========================= */
+let sequenceAnswer = 0;
+let sequenceScore = 0;
+
+function startSequenceGame(){
+  stopAllGames();
+  sequenceScore = 0;
+  document.getElementById("sequenceScore").innerText = sequenceScore;
+  document.getElementById("sequenceMsg").innerText = "Pick the next number.";
+  newSequenceQuestion();
+}
+
+function newSequenceQuestion(){
+  const type = rand(1,4);
+  let nums = [];
+
+  if(type === 1){
+    let start = rand(1,10);
+    let step = rand(2,8);
+    nums = [start,start+step,start+step*2,start+step*3];
+    sequenceAnswer = start + step*4;
+  }
+
+  if(type === 2){
+    let start = rand(2,6);
+    nums = [start,start*2,start*4,start*8];
+    sequenceAnswer = start * 16;
+  }
+
+  if(type === 3){
+    let start = rand(20,50);
+    let step = rand(2,7);
+    nums = [start,start-step,start-step*2,start-step*3];
+    sequenceAnswer = start - step*4;
+  }
+
+  if(type === 4){
+    let a = rand(1,5);
+    nums = [a,a+1,a+3,a+6];
+    sequenceAnswer = a + 10;
+  }
+
+  document.getElementById("sequenceQuestion").innerText = nums.join(", ") + ", ?";
+
+  let answers = [sequenceAnswer];
+  while(answers.length < 4){
+    let wrong = sequenceAnswer + rand(-12,12);
+    if(wrong !== sequenceAnswer && !answers.includes(wrong)){
+      answers.push(wrong);
+    }
+  }
+
+  shuffleArray(answers);
+
+  const choices = document.getElementById("sequenceChoices");
+  choices.innerHTML = "";
+
+  answers.forEach(ans => {
+    const btn = document.createElement("button");
+    btn.className = "choiceBtn";
+    btn.innerText = ans;
+    btn.onclick = function(){
+      checkSequence(ans);
+    };
+    choices.appendChild(btn);
+  });
+}
+
+function checkSequence(ans){
+  if(ans === sequenceAnswer){
+    sequenceScore++;
+    document.getElementById("sequenceScore").innerText = sequenceScore;
+    document.getElementById("sequenceMsg").innerText = "Correct!";
+    newSequenceQuestion();
+  }else{
+    document.getElementById("sequenceMsg").innerText = "Wrong. New question.";
+    newSequenceQuestion();
+  }
+}
+</script>
+
+</body>
+</html>
